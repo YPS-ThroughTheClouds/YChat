@@ -1,12 +1,15 @@
-from pingpong1.utils import MessageType, init_client, recv_message, send_message
+from pingpong1.utils import MessageType, Client
 
 # Set up the TCP connection
 # currently loopback, but we can make this more generic to take any server IP address
-init_client()
+client = Client.init()
+
 # Send a packet over the TCP connection
-send_message(MessageType.Ping)
+client.send_message(MessageType.Ping)
+
 # Receive a packet over the TCP connection
-msg = recv_message()
+msg = client.recv_message()
+
 # should process received message and check its a Pong
 
 
