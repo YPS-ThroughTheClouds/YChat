@@ -1,15 +1,19 @@
-from pingpong1.utils import MessageType, Client
+import asyncore
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from utils import Client, Message
 
 # Set up the TCP connection
 # currently loopback, but we can make this more generic to take any server IP address
-client = Client.init()
+client = Client()
 
 # Send a packet over the TCP connection
-client.send_message(MessageType.Ping)
+client.send_message(Message.Ping)
 
-# Receive a packet over the TCP connection
-msg = client.recv_message()
+asyncore.loop()
 
-# should process received message and check its a Pong
 
 
