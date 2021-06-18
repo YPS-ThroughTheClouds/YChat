@@ -1,4 +1,4 @@
-#Simple Client-Server PingPong Application
+# Simple Client-Server PingPong Application
 
 ## Objective
 In this application, we run one client program and one server program in which the following steps should occur:
@@ -8,21 +8,21 @@ In this application, we run one client program and one server program in which t
 
 ## Tasks
 You can complete this assignment in two steps:
-1. Implement the client-side logic of sending a **Ping** message to the server. This is done in the file `client.py`.
-2. Implement the server-side logic of sending a **Pong** message whenever a **Ping** is received. This is done in the file `server.py`.
+1. Implement the client-side logic of sending a **Ping** message to the server. This is done in the file `client_student.py`.
+2. Implement the server-side logic of sending a **Pong** message whenever a **Ping** is received. This is done in the file `server_student.py`.
 
 ## Software Interface
 You are provided skeleton code, with portions you must fill in yourself. The portions you must fill are demarcated by these comments:  
 `*** start ***`  
 `*** end ***`  
 
-For the Server and Client, we provide the following two functions to send and receive messages:
-`send_message(self, Message)`
+For the Server and Client, we provide the following two functions to send and receive messages:  
+`send_message(self, Message)`  
 `receive_message(self)`  
 
 So, for example, to send a message from the server, you would write:  
-`server.send_message(Message.Pong)` 
-To receive a message, you would write:
+`server.send_message(Message.Pong)`  
+To receive a message, you would write:  
 `msg = server.receive_message()` 
 
 ## Running the Applications (on command line)
