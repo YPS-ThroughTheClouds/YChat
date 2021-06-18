@@ -25,5 +25,14 @@ So, for example, to send a message from the server, you would write:
 To receive a message, you would write:
 `msg = server.receive_message()` 
 
+## Running the Applications (on command line)
+Open 2 terminals.  
+In the first terminal run:  
+`python server_student.py` or `python server.py`    
+Then, In the other terminal run:  
+`python client_student.py` or `python client.py`  
+You should see the **Ping** and **Pong** messages printed in the terminals. 
+
 ## Notes for Anurag
-`server_student.py` and `client_student.py` are the files you have to fill out yourself. You can run them against `server.py` and `client.py`. They all use loopback, and the port number is defined at the top of `utils.py`. 
+`server_student.py` and `client_student.py` are the files you have to fill out yourself. You can run them against `server.py` and `client.py`. They all use loopback, and the port number is defined at the top of `utils.py`.  
+
