@@ -7,13 +7,16 @@ from utils2 import SocketHandler, MainServer, port, Message, get_other_client, s
 
 
 class Server(SocketHandler):
-    # Specify what should occur when the server receives a message
+    # Specify what should occur when a server receives a message
     def handle_read(self):
         msg = self.receive_message()
-        if (msg == Message.Ping) | (msg == Message.Pong): 
-            self.forward_message(msg)
+        
+        # *** start ***
+        # Forward Ping and Pong message to other client
+        # *** end ***
 
-# Sets up the TCP connection between the Server and the Clients
+
+# Sets up the TCP connection between the Server and the Client
 server = MainServer(port, Server)
 
 asyncore.loop()

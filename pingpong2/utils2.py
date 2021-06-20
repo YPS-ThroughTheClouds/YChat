@@ -90,6 +90,11 @@ class SocketHandler(asyncore.dispatcher_with_send):
             self.send("Pong")
         else:
             print("Message was not a Message type. Please try again.")
+    
+    def forward_message(self, msg):
+        index = get_other_client(self.getpeername())
+        if len(index) != 0: 
+            sockets[index[0]].send_message(msg)
 
 
 def get_other_client(peername):

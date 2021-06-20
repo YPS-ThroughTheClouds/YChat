@@ -14,8 +14,6 @@ class Server(SocketHandler):
         
         # *** start ***
         # check if message is a Ping, and respond with a Pong
-        if msg == Message.Ping: 
-            self.send_message(Message.Pong)
         # *** end ***
 
 # Sets up the connection between the Server and the Client
