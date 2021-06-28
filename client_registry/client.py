@@ -11,9 +11,10 @@ from utils3 import Client, Message
 client = Client()
 
 # Send a packet over the TCP connection
-client.send_message(Message.Register)
-client.send_message(Message.Login)
-client.send_message(Message.RequestUsers)
+client.register_user("ramla")
+client.login("ramla")
+client.request_user_list()
+client.print_user_list()
 
 
 asyncore.loop()
