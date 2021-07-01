@@ -2,12 +2,9 @@ import enum
 import asyncore
 import socket
 
-port = 9000
+from server_student import server_sends_a_pong
 
-class Message(enum.Enum):
-    Ping = 0
-    Pong = 1
-    Unknown = 2
+port = 8888
 
 class Client(asyncore.dispatcher_with_send):
     host = "localhost"
@@ -36,56 +33,59 @@ class Client(asyncore.dispatcher_with_send):
     
     def receive_message(self):
         receivedData = self.recv(8192)
-        if receivedData == "Ping":
-            return Message.Ping
-        elif receivedData == "Pong":
-            return Message.Pong
+        if receivedData == b'Ping':
+            return "Ping"
+        elif receivedData == b'Pong':
+            return "Pong"
         else:
-            return Message.Unknown
+            return "Uknown message"
 
     def send_message(self, data):
-        if data == Message.Ping:
-            self.out_buffer += "Ping"
-        elif data == Message.Pong:
-            self.out_buffer += "Pong"
+        if data == "Ping":
+            self.out_buffer = bytes('Ping', 'ascii')
+        elif data == "Pong":
+            self.out_buffer = bytes('Pong', 'ascii')
         else:
-            print("Message was not a Message type. Please try again.")
+            print("Message was not a Ping or Pong type. Please try again.")
 
 
 class MainServer(asyncore.dispatcher):
-    def __init__(self, port, handler):
+    def __init__(self, port):
         asyncore.dispatcher.__init__(self)
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.bind(('',port))
         self.listen(5)
         self.in_buffer = ''
-        self.handler = handler
 
     def handle_accept(self):
         newSocket, address = self.accept(  )
         print ("Connected from", address)
-        # SecondaryServerSocket(newSocket)
-        self.handler(newSocket)
+        SocketHandler(newSocket)
 
 class SocketHandler(asyncore.dispatcher_with_send):
     def handle_close(self):
-        print("Disconnected from", self.getpeername())
         self.close()
     
     def receive_message(self):
         receivedData = self.recv(8192)
-        if receivedData == "Ping":
-            return Message.Ping
-        elif receivedData == "Pong":
-            return Message.Pong
+        if receivedData == b'Ping':
+            return "Ping"
+        elif receivedData == b'Pong':
+            return "Pong"
         else:
-            return Message.Unknown
+            return "Message Unknown"
 
     def send_message(self, data):
-        if data == Message.Ping:
-            self.send("Ping")
-        elif data == Message.Pong:
-            self.send("Pong")
+        if data == "Ping":
+            self.send(b'Ping')
+        elif data == "Pong":
+            self.send(b'Pong')
         else:
             print("Message was not a Message type. Please try again.")
+    
+    def handle_read(self):
+        msg = self.receive_message()
+        print(msg)
+        server_sends_a_pong(self, msg)
+        
 

@@ -1,25 +1,22 @@
-import asyncore
-import sys
-import os
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from utils import SocketHandler, MainServer, port, Message
-
-
-class Server(SocketHandler):
-    # function which specifies what should occur when a server receives a message
-    def handle_read(self):
-        msg = self.receive_message()
-        print(msg)
-        
-        # *** start ***
-        # check if message is a Ping, and respond with a Pong
-        # *** end ***
-
-# Sets up the connection between the Server and the Client
-server = MainServer(port, Server)
-
-asyncore.loop()
-
-
-
+# """
+# Description:
+# In this function, write the actions a server should perform when it receives a message. 
+#
+# To Do:
+# You should complete the following steps:
+# 1. Check if the received message is a "Ping"
+# 2. If the message is a "Ping", then send a "Pong" message
+#
+# Parameters:
+# server (Server): A handle to a server object that provides functions to send and receive messages.
+# msg (string): the message the server has just received from a client
+# 
+# """
+def server_sends_a_pong(server, msg):
+    # `*** start ***`  
+    
+    # Hint: You can send a message using the server.send_message(msg) function.
+    if msg == "Ping":
+        server.send_message("Pong")
+    
+    # `*** end ***`  

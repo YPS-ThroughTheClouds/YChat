@@ -6,11 +6,6 @@ In this application, we run one client program and one server program in which t
 2. The server receives the message, and checks that the message is a **Ping**
 3. The server sends a **Pong** message to the client 
 
-## Tasks
-You can complete this assignment in two steps:
-1. Implement the client-side logic of sending a **Ping** message to the server. This is done in the file `client_student.py`.
-2. Implement the server-side logic of sending a **Pong** message whenever a **Ping** is received. This is done in the file `server_student.py`.
-
 ## Software Interface
 You are provided skeleton code, with portions you must fill in yourself. The portions you must fill are demarcated by these comments:  
 `*** start ***`  
@@ -28,11 +23,12 @@ To receive a message, you would write:
 ## Running the Applications (on command line)
 Open 2 terminals.  
 In the first terminal run:  
-`python server_student.py` or `python server.py`    
+`python3 server.py`    
 Then, In the other terminal run:  
-`python client_student.py` or `python client.py`  
+`python3 client.py`  
 You should see the **Ping** and **Pong** messages printed in the terminals. 
 
-## Notes for Anurag
-`server_student.py` and `client_student.py` are the files you have to fill out yourself. You can run them against `server.py` and `client.py`. They all use loopback, and the port number is defined at the top of `utils.py`.  
-
+## Tasks
+You can complete this assignment in two steps:
+1. Implement the client-side logic of sending a **Ping** message to the server. This is done in the file `client_student.py`. Run your client application against the server file we've provided to check your client is working correctly.
+2. Implement the server-side logic of sending a **Pong** message whenever a **Ping** is received. This is done in the file `server_student.py`. To test, run your own client implementation against your server implementation.
