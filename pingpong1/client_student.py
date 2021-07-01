@@ -14,7 +14,6 @@ def client_sends_a_ping(client):
     # `*** start ***`  
     
     # Hint: You can send a message using the client.send_message(msg) function.
-    client.send_message("Ping")
     
     # `*** end ***`  
 

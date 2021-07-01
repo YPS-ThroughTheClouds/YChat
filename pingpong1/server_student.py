@@ -16,7 +16,5 @@ def server_sends_a_pong(server, msg):
     # `*** start ***`  
     
     # Hint: You can send a message using the server.send_message(msg) function.
-    if msg == "Ping":
-        server.send_message("Pong")
-    
+
     # `*** end ***`  
