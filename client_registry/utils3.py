@@ -3,7 +3,7 @@ import asyncore
 import socket
 from collections import namedtuple
 
-port = 8889
+port = 8887
 sockets = []
 users = {}
 active_users = {}
@@ -13,16 +13,19 @@ class Message(enum.Enum):
     Pong = 1
     Register = 2
     RegistrationComplete = 3
-    Login = 4
-    LoginComplete = 5
-    RequestUsers = 6
-    UserList = 7
-    Unknown = 8
+    RegsitrationFailed = 4
+    Login = 5
+    LoginComplete = 6
+    LoginFailed = 7
+    RequestUsers = 8
+    UserList = 9
+    Unknown = 10
 
 MessageData = namedtuple("MessageData", "type, data")
 
 class Client(asyncore.dispatcher_with_send):
     host = "localhost"
+    user_list = []
 
     def __init__(self, map=None):
         asyncore.dispatcher_with_send.__init__(self, map=map)
@@ -33,8 +36,12 @@ class Client(asyncore.dispatcher_with_send):
 
     def handle_read(self):
         # Do something with data
-        data = self.receive_message()
-        print(data)
+        messages = self.receive_message()
+        if messages:
+            for msg in messages:
+                print(msg)
+                if msg.type == Message.UserList:
+                    self.user_list = msg.data
 
     def readable(self):
         #Test for select() and friends
@@ -61,10 +68,14 @@ class Client(asyncore.dispatcher_with_send):
                 separated_messages.append(MessageData(Message.Pong, []))
             elif messages[0] == "RegistrationComplete":
                 separated_messages.append(MessageData(Message.RegistrationComplete, []))
+            elif messages[0] == "RegistrationFailed":
+                separated_messages.append(MessageData(Message.RegistrationFailed, []))
             elif messages[0] == "LoginComplete":
                 separated_messages.append(MessageData(Message.LoginComplete, []))
+            elif messages[0] == "LoginFailed":
+                separated_messages.append(MessageData(Message.LoginFailed, []))
             elif messages[0] == "UserList":
-                separated_messages.append(MessageData(Message.UserList, []))
+                separated_messages.append(MessageData(Message.UserList, {}))
             else:
                 return separated_messages.append(MessageData(Message.Unknown, []))
         
@@ -75,14 +86,24 @@ class Client(asyncore.dispatcher_with_send):
             self.out_buffer += "Ping "
         elif data == Message.Pong:
             self.out_buffer += "Pong "
-        elif data == Message.Register:
-            self.out_buffer += "Register "
-        elif data == Message.Login:
-            self.out_buffer += "Login "
-        elif data == Message.RequestUsers:
-            self.out_buffer += "RequestUsers "
         else:
-            print("Message was not a Message type. Please try again.")
+            print("Message ", data, " not supported with this function")
+        
+    def register_user(self, username):
+        self.out_buffer += "Register,"
+        self.out_buffer += username
+        self.out_buffer += " "
+    
+    def login(self, username):
+        self.out_buffer += "Login,"
+        self.out_buffer += username
+        self.out_buffer += " "
+    
+    def request_user_list(self):
+        self.out_buffer += "RequestUsers "
+
+    def print_user_list(self):
+        print(self.user_list)
 
 
 class MainServer(asyncore.dispatcher):
@@ -139,16 +160,23 @@ class SocketHandler(asyncore.dispatcher_with_send):
             self.send("RegistrationComplete ")
         elif data == Message.LoginComplete:
             self.send("LoginComplete ")
-        elif data == Message.UserList:
-            #ToDo: need to send whole dictionary
-            self.send("UserList ")
         else:
-            print("Message was not a Message type. Please try again.")
+            print("Message ", data, " not supported in this function.")
     
     def forward_message(self, msg):
         index = get_other_client(self.getpeername())
         if len(index) != 0: 
             sockets[index[0]].send_message(msg)
+    
+    def send_user_list(self, requesting_client):
+        msg = "UserList"
+        for key in active_users:
+            if key != requesting_client:
+                msg += ","
+                msg += active_users[key]
+        msg += " "
+        self.send(msg)
+
 
 
 def get_other_client(peername):
