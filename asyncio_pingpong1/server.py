@@ -1,30 +1,25 @@
-import asyncio 
+import asyncio
 import tkinter as tk
 from threading import Thread, Condition
 from gui import PongBox
+from utils import Server
+from server_student import server_sends_a_pong 
 
 global ping
 global pong
 
 async def handle_echo(reader, writer):
+    server = Server(reader, writer)
 
     while True: 
-        data = await reader.read(100) 
-        message = data.decode() 
-        addr = writer.get_extra_info('peername') 
-        print("Received %r from %r" % (message, addr))
+        msg = await server.receive_message()
 
-        if message == "Ping":
+        if msg == "Ping":
             with ping:
                 ping.notifyAll()
 
-            with pong:
-                pong.wait()
-                writer.write("Pong".encode()) 
-                await writer.drain() 
+        await server_sends_a_pong(server, msg)
 
-    # print("Close the client socket") 
-    # writer.close() 
 
 ping = Condition()
 pong = Condition()

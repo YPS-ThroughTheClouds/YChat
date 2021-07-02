@@ -2,23 +2,24 @@ import asyncio
 import tkinter as tk
 from threading import Thread, Condition
 from gui import PingBox
+from utils import Client
+from client_student import client_sends_a_ping
 
 async def tcp_echo_client(ping, pong, loop): 
     reader, writer = await asyncio.open_connection('127.0.0.1', 8888, loop=loop) 
-    
+    client = Client(reader, writer)
+
     while True:
         with ping:
             ping.wait()
     
-        writer.write("Ping".encode())
+        await client_sends_a_ping(client)
 
-        data = await reader.read(100)
-        print(data.decode())
-        if data.decode() == "Pong":
+        data = await client.receive_message()
+
+        if data == "Pong":
             with pong:
                 pong.notifyAll()
-        # print('Close the socket') 
-        # writer.close() 
 
 
 ping = Condition()
