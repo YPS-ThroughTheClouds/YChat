@@ -16,8 +16,6 @@ async def client_sends_a_pong(client, msg):
     # `*** start ***`  
     
     # Hint: You can send a message using the `await client.send_message(msg)` function.
-    if msg == "Ping":
-        await client.send_message("Pong")
     
     # `*** end ***`  
 
