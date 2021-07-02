@@ -1,0 +1,37 @@
+import asyncio 
+import tkinter as tk
+from threading import Thread, Condition
+from gui import Client2Box
+from utils2 import Client, localhost, port
+
+async def pingpong_client(ping, pong, loop): 
+    reader, writer = await asyncio.open_connection(localhost, port, loop=loop) 
+    client = Client(reader, writer)
+
+    while True:
+        data = await client.receive_message()
+        if data == "Ping":
+            with ping:
+                ping.notify()
+            with pong:
+                pong.wait()
+            await client.send_message("Pong")
+
+
+def start_gui(ping,pong):
+        rt = tk.Tk()
+        rt.withdraw()
+        ping_wnd = Client2Box(rt, lambda: print('Ping!'),lambda: print('Pong!'),ping, pong)
+        rt.mainloop()
+
+if __name__ == "__main__":
+    ping = Condition()
+    pong = Condition()
+
+    # Create and start message worker
+    gui_worker = Thread(target=lambda: start_gui(ping,pong), daemon=True)
+    gui_worker.start()
+
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(pingpong_client(ping, pong, loop)) 
+    loop.close()
