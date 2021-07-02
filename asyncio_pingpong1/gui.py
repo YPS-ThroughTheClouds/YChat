@@ -4,8 +4,6 @@ import tkinter as tk
 from threading import Thread, Condition
 from time import sleep
 
-
-
 class PingBox:
     def __init__(self, root, ping_action, ping_sent, pong_recvd):
         self.ping_action = ping_action
