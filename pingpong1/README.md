@@ -20,7 +20,7 @@ So, for example, to send a message from the server, you would write:
 To receive a message, you would write:  
 `msg = await server.receive_message()` 
 
-Whenever you use the send or receive messages, you have to write `await` before, as it indicates that messages can be sent or received asynchronously.
+Whenever you use the send or receive messages, you must write `await` before, as it indicates that messages can be sent or received asynchronously.
 
 ## Running the Applications (on command line)
 Open 2 terminals.  
@@ -28,7 +28,8 @@ In the first terminal run:
 `python3 server.py`    
 Then, In the other terminal run:  
 `python3 client.py`  
-You should see the **Ping** and **Pong** messages printed in the terminals. 
+
+Two windows will open up, labelled client and server. The client window will have a `Ping` button. If your code is written correctly, then pressing the button will send a `Ping` message to the server, and the server wil respond with a `Pong` message. Message transmision and reception will be printed on to the screens.
 
 ## Tasks
 You can complete this assignment in two steps:

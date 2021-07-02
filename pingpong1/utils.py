@@ -1,9 +1,9 @@
+
+localhost = '127.0.0.1'
 port = 8888
 
 
 class Client:
-    host = "localhost"
-
     def __init__(self, reader, writer):
         self.reader = reader
         self.writer = writer
