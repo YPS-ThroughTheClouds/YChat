@@ -45,17 +45,18 @@ class PingBox:
     def _on_ping(self):
         self.ping_action()
         with self.ping_sent:
-            self.ping_sent.notifyAll()
+            self.ping_sent.notify()
         txt = self.status_txt.get()
         txt += 'Sent Ping message, waiting to receive Pong message...\n'
         self.status_txt.set(txt)
 
     def _process_pong(self):
-        with self.pong_recvd:
-            self.pong_recvd.wait()
-        txt = self.status_txt.get()
-        txt += 'Received Pong message, all done!\n'
-        self.status_txt.set(txt)
+        while True:
+            with self.pong_recvd:
+                self.pong_recvd.wait()
+            txt = self.status_txt.get()
+            txt += 'Received Pong message, all done!\n'
+            self.status_txt.set(txt)
 
 
 class PongBox:
@@ -86,21 +87,22 @@ class PongBox:
         self.ping_worker.start()
 
     def _process_ping(self):
-        with self.ping_recvd:
-            self.ping_recvd.wait()
+        while True:
+            with self.ping_recvd:
+                self.ping_recvd.wait()
 
-        txt = self.status_txt.get()
-        txt += 'Received Ping message, waiting to send Pong message...\n'
-        self.status_txt.set(txt)
+            txt = self.status_txt.get()
+            txt += 'Received Ping message, waiting to send Pong message...\n'
+            self.status_txt.set(txt)
 
-        self.ping_action()
+            self.ping_action()
 
-        with self.pong_sent:
-            self.pong_sent.notifyAll()
+            with self.pong_sent:
+                self.pong_sent.notify()
 
-        txt = self.status_txt.get()
-        txt += 'Sent Pong message, all done!\n'
-        self.status_txt.set(txt)
+            txt = self.status_txt.get()
+            txt += 'Sent Pong message, all done!\n'
+            self.status_txt.set(txt)
 
 
 if __name__ == "__main__":
