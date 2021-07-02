@@ -12,11 +12,11 @@ You are provided skeleton code, with portions you must fill in yourself. The por
 `*** end ***`  
 
 For the Server and Client, we provide the following two functions to send and receive messages:  
-`send_message(self, Message)`  
+`send_message(self, message)`  
 `receive_message(self)`  
 
 So, for example, to send a message from the server, you would write:  
-`await server.send_message(Message.Pong)`  
+`await server.send_message("Ping")`  
 To receive a message, you would write:  
 `msg = await server.receive_message()` 
 

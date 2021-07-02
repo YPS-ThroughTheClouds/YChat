@@ -21,7 +21,6 @@ async def pingpong_socket_handler(reader, writer):
         
         if msg == "Pong":
             with pong:
-                print("notifying pong")
                 pong.notify()
             await server_forwards_message(server, msg)
             

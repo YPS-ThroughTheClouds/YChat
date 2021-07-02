@@ -96,10 +96,6 @@ class Client2Box:
             txt += 'Received Ping message, sending Pong message!\n'
             self.status_txt.set(txt)
 
-            with self.pong_sent:
-                self.pong_sent.notify()
-            self.pong_action()
-
 class ServerBox:
     def __init__(self, root, ping_action, pong_action, ping_recvd, pong_recvd):
         self.ping_action = ping_action

@@ -3,6 +3,7 @@ import tkinter as tk
 from threading import Thread, Condition
 from gui import Client2Box
 from utils2 import Client, localhost, port
+from client2_student import client_sends_a_pong
 
 async def pingpong_client(ping, pong, loop): 
     reader, writer = await asyncio.open_connection(localhost, port, loop=loop) 
@@ -13,9 +14,8 @@ async def pingpong_client(ping, pong, loop):
         if data == "Ping":
             with ping:
                 ping.notify()
-            with pong:
-                pong.wait()
-            await client.send_message("Pong")
+
+            await client_sends_a_pong(client,data)
 
 
 def start_gui(ping,pong):
@@ -23,6 +23,7 @@ def start_gui(ping,pong):
         rt.withdraw()
         ping_wnd = Client2Box(rt, lambda: print('Ping!'),lambda: print('Pong!'),ping, pong)
         rt.mainloop()
+
 
 if __name__ == "__main__":
     ping = Condition()
