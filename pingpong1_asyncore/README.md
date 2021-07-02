@@ -16,11 +16,9 @@ For the Server and Client, we provide the following two functions to send and re
 `receive_message(self)`  
 
 So, for example, to send a message from the server, you would write:  
-`await server.send_message(Message.Pong)`  
+`server.send_message(Message.Pong)`  
 To receive a message, you would write:  
-`msg = await server.receive_message()` 
-
-Whenever you use the send or receive messages, you have to write `await` before, as it indicates that messages can be sent or received asynchronously.
+`msg = server.receive_message()` 
 
 ## Running the Applications (on command line)
 Open 2 terminals.  
