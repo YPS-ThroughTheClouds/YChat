@@ -1,27 +1,24 @@
-import asyncore
-import sys
-import os
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from utils2 import Client, Message
-
-class Client2(Client):
-    def handle_read(self):
-        msg = self.receive_message()
-        print(msg)
-
-        # *** start ***
-        # Send Pong message in response to a Ping
-        # *** end ***
-            
-
-
-# Set up the TCP connection
-# currently loopback, but we can make this more generic to take any server IP address
-client = Client2()
-
-asyncore.loop()
-
-
+# """
+# Description:
+# In this function, write the steps client 2 should take when it receives a message from the server.
+#
+# To Do:
+# You should complete the following steps:
+# 1. Check if the received message is a "Ping"
+# 2. If so, send a "Pong" message to the server
+#
+# Parameters:
+# client (Client): A handle to a client object that provides functions to send and receive messages.
+# msg (string): the message the client has just received from the server
+#  
+# """
+async def client_sends_a_pong(client, msg):
+    # `*** start ***`  
+    
+    # Hint: You can send a message using the `await client.send_message(msg)` function.
+    if msg == "Ping":
+        await client.send_message("Pong")
+    
+    # `*** end ***`  
 
 

@@ -4,7 +4,6 @@ import tkinter as tk
 from threading import Thread, Condition
 from time import sleep
 
-from util import noop
 
 
 class PingBox:

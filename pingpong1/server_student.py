@@ -12,9 +12,11 @@
 # msg (string): the message the server has just received from a client
 # 
 # """
-def server_sends_a_pong(server, msg):
+async def server_sends_a_pong(server, msg):
     # `*** start ***`  
     
-    # Hint: You can send a message using the server.send_message(msg) function.
-
+    # Hint: You can send a message using the `await server.send_message(msg)` function.
+    if msg == "Ping":
+        await server.send_message("Pong")
+    
     # `*** end ***`  

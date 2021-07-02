@@ -1,20 +1,38 @@
-import asyncore
-import sys
-import os
+import asyncio 
+import tkinter as tk
+from threading import Thread, Condition
+from gui import Client1Box
+from utils2 import Client, localhost, port
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+async def pingpong_client(ping, pong,loop): 
+    reader, writer = await asyncio.open_connection(localhost, port, loop=loop) 
+    client = Client(reader, writer)
 
-from utils2 import Client, Message
+    while True:
+        with ping:
+            ping.wait()
 
-# Set up the TCP connection
-# currently loopback, but we can make this more generic to take any server IP address
-client = Client()
+        await client.send_message("Ping")
 
-# Send a packet over the TCP connection
-client.send_message(Message.Ping)
+        msg = await client.receive_message()
+        if msg == "Pong":
+            with pong:
+                pong.notify()
 
-asyncore.loop()
+def start_gui(ping, pong):
+        rt = tk.Tk()
+        rt.withdraw()
+        ping_wnd = Client1Box(rt, lambda: print('Ping!'), lambda: print('Pong!'), ping, pong)
+        rt.mainloop()
 
+if __name__ == "__main__":
+    ping = Condition()
+    pong = Condition()
 
+    # Create and start message worker
+    gui_worker = Thread(target=lambda: start_gui(ping, pong), daemon=True)
+    gui_worker.start()
 
-
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(pingpong_client(ping, pong, loop)) 
+    loop.close()
