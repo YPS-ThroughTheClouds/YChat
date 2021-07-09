@@ -2,8 +2,7 @@ from __future__ import print_function
 
 import tkinter as tk
 from threading import Thread, Condition
-from time import sleep
-
+import time
 
 
 class ClientBox:
@@ -17,21 +16,21 @@ class ClientBox:
         self.ping_wnd.title('Client')
 
         # Create Ping Frame
-        self.ping_frame = tk.Frame(master=self.ping_wnd, width=50, height=25, bg="white")
+        self.ping_frame = tk.Frame(master=self.ping_wnd, width=50, height=30, bg="white")
         self.ping_frame.pack(fill=tk.BOTH)
 
         # Create Ping button
         self.ping_btn = tk.Button(master=self.ping_frame,
                                   width=8, height=2,
-                                  bg="blue", fg="black",
-                                  text="Ping", font=("Helvetica", 10),
+                                  bg="green", fg="white",
+                                  text="Ping", font=("Helvetica", 10, "bold"),
                                   command=lambda: self._on_ping())
         self.ping_btn.pack(fill=tk.BOTH)
 
         # Create status label
         self.status_txt = tk.StringVar(value='Waiting to send Ping message...\n')
         self.status_lbl = tk.Label(master=self.ping_frame,
-                                   width=50, height=25,
+                                   width=50, height=15,
                                    textvariable=self.status_txt,
                                    font=("Helvetica", 10),
                                    bg="white", fg="black")
@@ -69,13 +68,13 @@ class ServerBox:
         self.pong_wnd.title('Server')
 
         # Create Pong Frame
-        self.pong_frame = tk.Frame(master=self.pong_wnd, width=50, height=25, bg="white")
+        self.pong_frame = tk.Frame(master=self.pong_wnd, width=50, height=30, bg="white")
         self.pong_frame.pack(fill=tk.BOTH)
 
         # Create status label
         self.status_txt = tk.StringVar(value='Waiting to receive Ping message...\n')
         self.status_lbl = tk.Label(master=self.pong_frame,
-                                   width=50, height=25,
+                                   width=50, height=15,
                                    textvariable=self.status_txt,
                                    font=("Helvetica", 10),
                                    bg="white", fg="black")
@@ -90,11 +89,15 @@ class ServerBox:
             with self.ping_recvd:
                 self.ping_recvd.wait()
 
+            time.sleep(1)
+            
             txt = self.status_txt.get()
             txt += 'Received Ping message, waiting to send Pong message...\n'
             self.status_txt.set(txt)
 
             self.ping_action()
+
+            time.sleep(1)
 
             with self.pong_sent:
                 self.pong_sent.notify()

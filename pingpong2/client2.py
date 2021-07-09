@@ -4,6 +4,7 @@ from threading import Thread, Condition
 from gui import Client2Box
 from utils2 import Client, localhost, port
 from client2_student import client_sends_a_pong
+import time
 
 async def pingpong_client(ping, pong, loop): 
     reader, writer = await asyncio.open_connection(localhost, port, loop=loop) 
@@ -12,6 +13,7 @@ async def pingpong_client(ping, pong, loop):
     while True:
         data = await client.receive_message()
         if data == "Ping":
+            time.sleep(1)
             with ping:
                 ping.notify()
 

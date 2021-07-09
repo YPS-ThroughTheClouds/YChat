@@ -24,16 +24,19 @@ async def client(button_cv, completed_cv, mutex, flags, send_queue, receive_queu
             await client.receive_message() 
             flags[0] = False
 
-        if flags[1] == True: #Login
+        elif flags[1] == True: #Login
             username = send_queue.get()
             await login(client, username)
             await client.receive_message() 
             flags[1] = False
 
-        if flags[2] == True: #Request
+        elif flags[2] == True: #Request
             await request_user_list(client)
             await client.receive_message() 
             flags[2] = False
+        
+        else: #Close connection
+            await client.send_message("CloseConnection ")
 
         mutex.release()
 
@@ -41,10 +44,10 @@ async def client(button_cv, completed_cv, mutex, flags, send_queue, receive_queu
             completed_cv.notify()
 
 def start_gui(button_cv, completed_cv, mutex, flags, send_queue, receive_queue):
-        rt = tk.Tk()
-        rt.withdraw()
-        ping_wnd = ClientBox(rt, button_cv, completed_cv, mutex, flags, send_queue, receive_queue)
-        rt.mainloop()
+    rt = tk.Tk()
+    rt.withdraw()
+    ping_wnd = ClientBox(rt, button_cv, completed_cv, mutex, flags, send_queue, receive_queue)
+    rt.mainloop()
 
 if __name__ == "__main__":
     button_cv = Condition()
