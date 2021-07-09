@@ -18,28 +18,31 @@ class ClientBox:
         self.action_flags = action_flags
         self.send_queue = send_queue
         self.receive_queue = receive_queue
+        self.root = root
 
         # Create message Box
         self.message_wnd = tk.Toplevel(root)
         self.message_wnd.title('Client')
 
         # Create Ping Frame
-        self.reg_frame = tk.Frame(master=self.message_wnd, width=50, height=25, bg="white")
+        self.reg_frame = tk.Frame(master=self.message_wnd, width=30, height=20, bg="white")
         self.reg_frame.pack(fill=tk.BOTH)
 
         # Create Register button
         self.register_btn = tk.Button(master=self.reg_frame,
                                   width=8, height=2,
-                                  bg="blue", fg="black",
-                                  text="Register", font=("Helvetica", 10),
+                                  bg="green", fg="white",
+                                  text="Register", font=("Helvetica", 10, "bold"),
                                   command=lambda: self._on_register())
         self.register_btn.pack(fill=tk.BOTH)
 
+        # Also bind 'Enter' key to self._add_message_on_send()
+        self.message_wnd.bind('<Return>', lambda event: self._on_register())
 
         # Create status label
         self.status_txt = tk.StringVar(value='Waiting to Register...\n')
         self.status_lbl = tk.Label(master=self.reg_frame,
-                                   width=50, height=25,
+                                   width=30, height=15,
                                    textvariable=self.status_txt,
                                    font=("Helvetica", 10),
                                    bg="white", fg="black")
@@ -47,33 +50,40 @@ class ClientBox:
 
         # Create message input box
         self.msg_in_entry = tk.Text(master=self.reg_frame,
-                                    width=50, height=1,
+                                    width=30, height=1,
                                     font=("Helvetica", 15),
                                     bg="white", fg="black")
         self.msg_in_entry.focus_set()
         self.msg_in_entry.pack(fill=tk.BOTH, side=tk.LEFT)
+    
+        self.message_wnd.protocol("WM_DELETE_WINDOW", self.on_closing)
+    
+    def on_closing(self):
+        print("closing")
+        with self.button_cv:
+            self.button_cv.notify()
+        self.root.destroy()
 
-        # # Create and start message worker
-        # self.pong_worker = Thread(target=lambda: self._process_pong(), daemon=True)
-        # self.pong_worker.start()
 
     def _create_login_frame(self):
         # Create Login Frame
-        self.login_frame = tk.Frame(master=self.message_wnd, width=50, height=25, bg="white")
+        self.login_frame = tk.Frame(master=self.message_wnd, width=30, height=15, bg="white")
         self.login_frame.pack(fill=tk.BOTH)
 
         # Create Login button
         self.login_btn = tk.Button(master=self.login_frame,
                                   width=8, height=2,
-                                  bg="blue", fg="black",
-                                  text="Login", font=("Helvetica", 10),
+                                  bg="green", fg="white",
+                                  text="Login", font=("Helvetica", 10, "bold"),
                                   command=lambda: self._on_login())
         self.login_btn.pack(fill=tk.BOTH)
+
+        self.message_wnd.bind('<Return>', lambda event: self._on_login())
 
         # Create status label
         self.status_txt = tk.StringVar(value='Waiting to Login...\n')
         self.status_lbl = tk.Label(master=self.login_frame,
-                                   width=50, height=25,
+                                   width=30, height=15,
                                    textvariable=self.status_txt,
                                    font=("Helvetica", 10),
                                    bg="white", fg="black")
@@ -81,7 +91,7 @@ class ClientBox:
 
         # Create message input box
         self.msg_in_entry = tk.Text(master=self.login_frame,
-                                    width=50, height=1,
+                                    width=30, height=1,
                                     font=("Helvetica", 20),
                                     bg="white", fg="black")
         self.msg_in_entry.focus_set()
@@ -117,25 +127,46 @@ class ClientBox:
 
     def _create_request_frame(self):
         # Create request Frame
-        self.msg_frame = tk.Frame(master=self.message_wnd, width=50, height=25, bg="white")
+        self.msg_frame = tk.Frame(master=self.message_wnd, width=30, height=15, bg="white")
         self.msg_frame.pack(fill=tk.BOTH)
 
         # Create request button
         self.request_btn = tk.Button(master=self.msg_frame,
                                   width=8, height=2,
-                                  bg="blue", fg="black",
-                                  text="Request User Registry", font=("Helvetica", 10),
+                                  bg="green", fg="white",
+                                  text="Request User Registry", font=("Helvetica", 10, "bold"),
                                   command=lambda: self._on_request())
         self.request_btn.pack(fill=tk.BOTH)
 
+        self.message_wnd.bind('<Return>', lambda event: self._on_request())
+
         # Create status label
-        self.status_txt = tk.StringVar(value='Waiting to Request Registry...\n')
+        self.status_txt = tk.StringVar(value='CLIENT REGISTRY\n')
         self.status_lbl = tk.Label(master=self.msg_frame,
-                                   width=50, height=25,
+                                   width=30, height=3,
                                    textvariable=self.status_txt,
                                    font=("Helvetica", 10),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
+
+        # Create message output box
+        self.usr_lstbox = tk.Listbox(master=self.msg_frame,
+                                     font=("Helvetica", 20),
+                                     width=30, height=15,
+                                     selectforeground='white',
+                                     selectbackground='blue',
+                                     bg="white", fg="black")
+        self.usr_lstbox.pack(fill=tk.BOTH, side=tk.LEFT)
+
+        # Bind usr_lstbox select action to callback
+        self.usr_lstbox.bind("<<ListboxSelect>>", lambda event: self._on_select(event))
+
+    def _on_select(self, event):
+        sel = event.widget.curselection()
+        if sel:
+            idx = sel[0]
+            data = event.widget.get(idx)
+            print(data)
     
     def _on_login(self):
         self.login_action()
@@ -175,17 +206,18 @@ class ClientBox:
         with self.completed_cv:
             self.completed_cv.wait()
 
-        txt = self.status_txt.get()
-        txt = 'Client Registry \n'
+        # txt = self.status_txt.get()
+        # txt = 'Client Registry \n'
         
         msg = self.receive_queue.get()
         clients = msg.split(',') 
         print(clients)
+        self.usr_lstbox.delete(0,tk.END)
         for item in clients:
-            txt += item
-            txt += '\n'
-
-        self.status_txt.set(txt)
+            # txt += item
+            # txt += '\n'
+            self.usr_lstbox.insert(tk.END, item)
+        # self.status_txt.set(txt)
 
 
 class ServerBox:

@@ -94,6 +94,8 @@ class Server:
                 separated_messages.append(MessageData("Login", messages[1: len(messages)]))
             elif messages[0] == "RequestUsers":
                 separated_messages.append(MessageData("RequestUsers", []))
+            elif messages[0] == "CloseConnection":
+                separated_messages.append(MessageData("CloseConnection", []))
             else:
                 separated_messages.append(MessageData("Unknown", []))
         
@@ -158,3 +160,10 @@ class Server:
 
     def log_in_client(self, username):
         active_users[self.get_addr_key()] = username
+    
+    def username_exists(self, username):
+        for key in users:
+            if users[key] == username:
+                return True
+        
+        return False

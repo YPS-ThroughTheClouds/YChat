@@ -3,7 +3,7 @@ import tkinter as tk
 import time
 from threading import Thread, Condition
 from gui import ServerBox
-from utils3 import Server, localhost, port, sockets
+from utils3 import Server, localhost, port, sockets, active_users
 from server_student import register_client, login_client, send_registry_to_client
 from queue import Queue
 
@@ -31,6 +31,13 @@ async def socket_handler(reader, writer):
                 await send_registry_to_client(server)
                 with request_users:
                     request_users.notify()
+            
+            if msg.type == "CloseConnection":
+                sockets.remove(server)
+                addr = server.get_addr_key()
+                if addr in active_users:
+                    del active_users[addr]
+               
            
 def start_gui(register, login, request_users):
     rt = tk.Tk()

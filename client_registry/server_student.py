@@ -4,8 +4,7 @@
 #
 # To Do:
 # You should complete the following steps:
-# 1. Check if the client has already registered 
-# (Hint: server.registered() returns true if the client has already been registered)
+# 1. Check if the client has already registered or if the username is taken
 # 2. If it has, then send a registration_failed message
 # 3. If not, register the client and send a registration_successful message
 #
@@ -18,22 +17,23 @@ async def register_client(server, username):
     # Hint: `await server.registration_succesful(username)` and `await server.registration_failed(username)` 
     # can be used to respond to a login request
 
-    if server.registered():
-        # `*** start ***`  
-
+    # Hint: server.registered() returns true if the client has already been registered
+    # Hint: server.username_exists(username) returns true if the given username is taken
+    # Hint: You can register a client using the `server.register_user(username)` function
+    
+    # `*** start ***`  
+    if server.registered(): 
         print("Client is already registered")
         await server.registration_failed(username)
-    
-        # `*** end ***`  
-
+    elif server.username_exists(username):
+        print("Username Exists")
+        await server.registration_failed(username)      
     else:
-        # `*** start ***`  
-        # Hint: You can register a client using the `server.register_user(username)` function
         print("Adding user ", username)
         server.register_user(username)
         await server.registration_successful(username)
 
-        # `*** end ***`  
+    # `*** end ***`  
         
 
 # """
@@ -43,7 +43,6 @@ async def register_client(server, username):
 # To Do:
 # You should complete the following steps:
 # 1. Check if the client has already registered and its username matches what the server has on record
-# (Hint: server.registered() returns true if the client has already been registered)
 # 2. If it has, then send a login_failed message
 # 3. If not, login the client and send a login_successful message
 #
@@ -56,22 +55,21 @@ async def login_client(server, username):
     # Hint: `await server.login_succesful(username)` and `await server.login_failed(username)` 
     # can be used to respond to a login request
 
-    if server.registered() & server.username_matches_record(username):
-        # `*** start ***`  
-        # Hint: You can login a client using the `server.log_in_client(username)` function
+    # Hint: server.registered() returns true if the client has already been registered
+    # Hint: server.username_matches_record(username) returns true if the given username matches the registered one
+    # Hint: You can login a client using the `server.log_in_client(username)` function
+    
+    # `*** start ***`  
 
+    if server.registered() & server.username_matches_record(username):
         print("Logging in client")
         server.log_in_client(username)
         await server.login_successful(username)
-        
-        # `*** end ***`  
     else:
-        # `*** start ***`  
-
         print("Login failed")
         await server.login_failed(username)
 
-        # `*** end ***`  
+    # `*** end ***`  
 
 # """
 # Description:
@@ -91,18 +89,16 @@ async def send_registry_to_client(server):
     # Hint: `await server.send_registry()` and `await server.request_denied()` 
     # can be used to respond to a registry request
 
-    if server.logged_in():
-        # `*** start ***`  
+    # Hint: server.logged_in() returns true if the client has already logged in
 
+    # `*** start ***`  
+
+    if server.logged_in():
         print("Sending registry to client")
         await server.send_registry()
-        
-        # `*** end ***`  
     else:
-        # `*** start ***`  
-        
         print("Request denied")
         await server.request_denied()
         
-        # `*** end ***`  
+    # `*** end ***`  
 
