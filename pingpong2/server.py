@@ -4,6 +4,7 @@ from threading import Thread, Condition
 from gui import ServerBox
 from utils2 import Server, localhost, port, sockets
 from server_student import server_forwards_message
+import time
 
 global ping
 global pong
@@ -17,11 +18,13 @@ async def pingpong_socket_handler(reader, writer):
         if msg == "Ping":
             with ping:
                 ping.notify()
+            time.sleep(1)
             await server_forwards_message(server, msg)
         
         if msg == "Pong":
             with pong:
                 pong.notify()
+            time.sleep(1)
             await server_forwards_message(server, msg)
             
 
