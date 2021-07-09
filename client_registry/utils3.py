@@ -123,7 +123,7 @@ class Server:
         await self.send_message("RequestDenied ")
         request_q.put("Denied request of client")
     
-    async def send_registry(self, username):
+    async def send_registry(self):
         requesting_client = self.get_addr_key()
         msg = "UserList"
         for key in active_users:
@@ -133,4 +133,28 @@ class Server:
         msg += " "
         
         await self.send_message(msg)
-        request_q.put("Sent registry to client " + username)
+        request_q.put("Sent registry to client " + active_users[requesting_client])
+    
+    def registered(self):
+        if self.get_addr_key() in users:
+            return True
+        else:
+            False
+
+    def register_user(self, username):
+        users[self.get_addr_key()] = username
+    
+    def username_matches_record(self, username):
+        if self.registered():
+            return username == users[self.get_addr_key()]
+        else:
+            return False
+
+    def logged_in(self):
+        if self.get_addr_key() in active_users:
+            return True
+        else:
+            False
+
+    def log_in_client(self, username):
+        active_users[self.get_addr_key()] = username
