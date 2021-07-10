@@ -33,7 +33,7 @@ async def client_sender(client, send_queue):
                 await client.send_message("Msg," + msg_data)
         
             elif msg_type == "CloseConnection":
-                await client.send_message("CloseConnection ")
+                await client.send_message("CloseConnection")
 
 async def register_user(client, username):
     await client.register(username)

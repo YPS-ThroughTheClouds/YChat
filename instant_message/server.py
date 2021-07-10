@@ -33,13 +33,16 @@ async def socket_handler(reader, writer):
                 with request_users:
                     request_users.notify()
             if msg.type == "CloseConnection":
+                print("closing connection")
                 sockets.remove(server)
                 addr = server.get_addr_key()
                 if addr in active_users:
+                    print("removing", active_users[addr])
                     del active_users[addr]
             if msg.type == "Msg":
                 await forward_message_to_client(server, msg.data[0], msg.data[1])
-                message_queue.put((server.get_username(), msg.data[0]))
+                if server.logged_in() & server.user_is_logged_in(msg.data[0]):
+                    message_queue.put((server.get_username(), msg.data[0]))
 
 
 async def register_client(server, username):

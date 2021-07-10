@@ -10,6 +10,7 @@ class ChatBox:
     def __init__(self, root, my_name, username, send_queue):
         self.username = username
         self.send_queue = send_queue
+        self.my_name = my_name
 
         # Create chat Box
         self.wnd = tk.Toplevel(root)
@@ -56,8 +57,8 @@ class ChatBox:
         self.msg_in_entry.delete("1.0", tk.END)
         
         txt = self.status_txt.get()
-        txt += self.username
-        txt + ": "
+        txt += self.my_name
+        txt += ": "
         txt += msg
         txt += "\n"
         self.status_txt.set(txt)
