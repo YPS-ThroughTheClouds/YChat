@@ -1,109 +1,30 @@
 # """
 # Description:
-# In this function, write the actions a server should perform when it receives a request to register a client. 
-#
+# In this function, write the actions a server should perform when it receives a message to forward to another client.
+# 
 # To Do:
 # You should complete the following steps:
-# 1. Check if the client has already registered or if the username is taken
-# 2. If it has, then send a registration_failed message
-# 3. If not, register the client and send a registration_successful message
+# 1. Check if the sending client has already logged in
+# 2. Check if the receiving client is logged in
+# 3. If so, forward the message
 #
 # Parameters:
 # server (Server): A handle to a server object that provides functions to send and receive messages.
-# username (string): the username the client wants to register with
-# 
-# """
-async def register_client(server, username):
-    # Hint: `await server.registration_succesful(username)` and `await server.registration_failed(username)` 
-    # can be used to respond to a login request
-
-    # Hint: server.registered() returns true if the client has already been registered
-    # Hint: server.username_exists(username) returns true if the given username is taken
-    # Hint: You can register a client using the `server.register_user(username)` function
-    
-    # `*** start ***`  
-    if server.registered(): 
-        print("Client is already registered")
-        await server.registration_failed(username)
-    elif server.username_exists(username):
-        print("Username Exists")
-        await server.registration_failed(username)      
-    else:
-        print("Adding user ", username)
-        server.register_user(username)
-        await server.registration_successful(username)
-
-    # `*** end ***`  
-        
-
-# """
-# Description:
-# In this function, write the actions a server should perform when it receives a request to login a client. 
+# receiver_username (String): the username of the receiving client
+# msg (String): the message to be sent to the receiving client
 #
-# To Do:
-# You should complete the following steps:
-# 1. Check if the client has already registered and its username matches what the server has on record
-# 2. If it has, then send a login_failed message
-# 3. If not, login the client and send a login_successful message
-#
-# Parameters:
-# server (Server): A handle to a server object that provides functions to send and receive messages.
-# username (string): the username the client wants to login with
-# 
 # """
-async def login_client(server, username):
-    # Hint: `await server.login_succesful(username)` and `await server.login_failed(username)` 
-    # can be used to respond to a login request
-
-    # Hint: server.registered() returns true if the client has already been registered
-    # Hint: server.username_matches_record(username) returns true if the given username matches the registered one
-    # Hint: You can login a client using the `server.log_in_client(username)` function
-    
-    # `*** start ***`  
-
-    if server.registered() & server.username_matches_record(username):
-        print("Logging in client")
-        server.log_in_client(username)
-        await server.login_successful(username)
-    else:
-        print("Login failed")
-        await server.login_failed(username)
-
-    # `*** end ***`  
-
-# """
-# Description:
-# In this function, write the actions a server should perform when it receives a request to send the client registry 
-#
-# To Do:
-# You should complete the following steps:
-# 1. Check if the client has already logged in
-# 2. If it has, then send the registry
-# 3. If not, send a request denied message
-#
-# Parameters:
-# server (Server): A handle to a server object that provides functions to send and receive messages.
-# 
-# """
-async def send_registry_to_client(server):
-    # Hint: `await server.send_registry()` and `await server.request_denied()` 
-    # can be used to respond to a registry request
-
-    # Hint: server.logged_in() returns true if the client has already logged in
-
-    # `*** start ***`  
-
-    if server.logged_in():
-        print("Sending registry to client")
-        await server.send_registry()
-    else:
-        print("Request denied")
-        await server.request_denied()
-        
-    # `*** end ***`  
-
-
 async def forward_message_to_client(server, receiver_username, msg):
-    if server.logged_in() & server.username_exists(receiver_username):
+    # Hint: `await server.forward_message(username, msg)`
+    # can be used to forward a message to client `username`
+
+    # Hint: server.logged_in() returns true if the sending client has already logged in
+    # Hint: server.user_is_logged_in(username) returns true if a client with `username` is logged in
+
+    # `*** start ***`  
+
+    if server.logged_in() & server.user_is_logged_in(receiver_username):
         print("forwarding message to ", receiver_username, ", ", msg)
         await server.forward_message(receiver_username, msg)
+    
+    # `*** end ***`  

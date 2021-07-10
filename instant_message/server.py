@@ -3,8 +3,8 @@ import tkinter as tk
 import time
 from threading import Thread, Condition
 from gui import ServerBox
-from utils3 import Server, localhost, port, sockets, active_users
-from server_student import register_client, login_client, send_registry_to_client, forward_message_to_client
+from utils4 import Server, localhost, port, sockets, active_users
+from server_student import forward_message_to_client
 from queue import Queue
 
 global register
@@ -40,7 +40,38 @@ async def socket_handler(reader, writer):
             if msg.type == "Msg":
                 await forward_message_to_client(server, msg.data[0], msg.data[1])
                 message_queue.put((server.get_username(), msg.data[0]))
-           
+
+
+async def register_client(server, username):
+    if server.registered(): 
+        print("Client is already registered")
+        await server.registration_failed(username)
+    elif server.username_exists(username):
+        print("Username Exists")
+        await server.registration_failed(username)      
+    else:
+        print("Adding user ", username)
+        server.register_user(username)
+        await server.registration_successful(username)
+
+async def login_client(server, username):
+    if server.registered() & server.username_matches_record(username):
+        print("Logging in client")
+        server.log_in_client(username)
+        await server.login_successful(username)
+    else:
+        print("Login failed")
+        await server.login_failed(username)
+
+
+async def send_registry_to_client(server):
+    if server.logged_in():
+        print("Sending registry to client")
+        await server.send_registry()
+    else:
+        print("Request denied")
+        await server.request_denied()
+
 def start_gui(register, login, request_users, message_queue):
     rt = tk.Tk()
     rt.withdraw()

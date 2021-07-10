@@ -178,6 +178,13 @@ class Server:
     def get_username(self):
         return active_users[self.get_addr_key()]
     
+    def user_is_logged_in(self, username):
+        for key in active_users:
+            if active_users[key] == username:
+                return True
+        
+        return False
+    
         
 def get_client(username):
     for key in active_users:

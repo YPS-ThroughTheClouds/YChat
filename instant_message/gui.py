@@ -4,7 +4,7 @@ import queue
 import tkinter as tk
 from threading import Thread, Condition
 from time import sleep
-from utils3 import register_q, login_q, request_q 
+from utils4 import register_q, login_q, request_q 
 
 class ChatBox:
     def __init__(self, root, my_name, username, send_queue):

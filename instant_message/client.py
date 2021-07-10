@@ -3,8 +3,7 @@ import tkinter as tk
 import time
 from threading import Thread, Condition, Lock
 from gui import ClientBox
-from utils3 import Client, localhost, port
-from client_student import register_user, login, request_user_list
+from utils4 import Client, localhost, port
 from queue import Queue
 from concurrent.futures import ThreadPoolExecutor
 
@@ -35,7 +34,16 @@ async def client_sender(client, send_queue):
         
             elif msg_type == "CloseConnection":
                 await client.send_message("CloseConnection ")
-            
+
+async def register_user(client, username):
+    await client.register(username)
+
+async def login(client, username):
+    await client.login(username)
+
+async def request_user_list(client):
+    await client.request_registry()
+
 
 async def client(receive_queue, loop): 
     reader, writer = await asyncio.open_connection(localhost, port, loop=loop) 
