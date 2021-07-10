@@ -19,7 +19,7 @@ async def register_client(server, username):
 
     # Hint: server.registered() returns true if the client has already been registered
     # Hint: server.username_exists(username) returns true if the given username is taken
-    # Hint: You can register a client using the `server.register_user(username)` function
+    # Hint: server.register_user(username) can be used to register a client
     
     # `*** start ***`  
 
@@ -34,8 +34,8 @@ async def register_client(server, username):
 # To Do:
 # You should complete the following steps:
 # 1. Check if the client has already registered and its username matches what the server has on record
-# 2. If it has, then send a login_failed message
-# 3. If not, login the client and send a login_successful message
+# 2. If it has, login the client and send a login_successful message
+# 3. If not, then send a login_failed message 
 #
 # Parameters:
 # server (Server): A handle to a server object that provides functions to send and receive messages.
@@ -48,7 +48,7 @@ async def login_client(server, username):
 
     # Hint: server.registered() returns true if the client has already been registered
     # Hint: server.username_matches_record(username) returns true if the given username matches the registered one
-    # Hint: You can login a client using the `server.log_in_client(username)` function
+    # Hint: server.log_in_client(username) can be used to log in a client
     
     # `*** start ***`  
 
