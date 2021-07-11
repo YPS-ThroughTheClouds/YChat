@@ -1,5 +1,6 @@
-
 localhost = '127.0.0.1'
+remotehost = "128.96.32.1" #TO DO: Change this!! 
+host = localhost
 port = 8888
 
 
@@ -21,7 +22,6 @@ class Client:
     async def send_message(self, data):
         self.writer.write(data.encode())
         await self.writer.drain()
-
 
 
 class Server:

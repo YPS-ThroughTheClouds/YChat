@@ -1,8 +1,9 @@
-
 from collections import namedtuple
 from queue import Queue
 
 localhost = '127.0.0.1'
+remotehost = "128.96.32.1" #TO DO: Change this!! 
+host = localhost
 port = 8888
 sockets = []
 
@@ -13,6 +14,7 @@ MessageData = namedtuple("MessageData", "type, data")
 register_q = Queue()
 login_q = Queue()
 request_q = Queue()
+
 
 class Client:
     def __init__(self, reader, writer, queue):
@@ -27,7 +29,7 @@ class Client:
         print(receivedMessages)
 
         for message in receivedMessages:
-            messages = message.split(',') 
+            messages = message.split(',')
             if messages[0] == "RegistrationSuccessful":
                 self.queue.put((messages[0], ""))
             elif messages[0] == "RegistrationFailed":
@@ -44,7 +46,7 @@ class Client:
                     msg += messages[i]
                     msg += ","
                     i += 1
-                
+
                 self.queue.put((messages[0], msg))
             elif messages[0] == "Msg":
                 self.queue.put((messages[0], messages[1] + "," + messages[2]))
@@ -54,7 +56,7 @@ class Client:
     async def send_message(self, data):
         self.writer.write((data + " EOM").encode())
         await self.writer.drain()
-    
+
     async def register(self, username):
         out_buffer = "Register,"
         out_buffer += username
@@ -74,7 +76,7 @@ class Server:
     def __init__(self, reader, writer):
         self.reader = reader
         self.writer = writer
-    
+
     def get_addr_key(self):
         return self.writer.get_extra_info('peername')
 
@@ -87,7 +89,7 @@ class Server:
         separated_messages = []
 
         for message in receivedMessages:
-            messages = message.split(',') 
+            messages = message.split(',')
             if messages[0] == "Register":
                 separated_messages.append(MessageData("Register", messages[1: len(messages)]))
             elif messages[0] == "Login":
@@ -100,7 +102,7 @@ class Server:
                 separated_messages.append(MessageData("Msg", messages[1: len(messages)]))
             else:
                 separated_messages.append(MessageData("Unknown", []))
-        
+
         return separated_messages
 
     async def send_message(self, data):
@@ -122,37 +124,34 @@ class Server:
     async def login_failed(self, username):
         await self.send_message("LoginFailed")
         login_q.put("Failed to login client " + username)
-    
+
     async def request_denied(self):
         await self.send_message("RequestDenied")
         request_q.put("Denied request of client")
-    
+
     async def send_registry(self):
         requesting_client = self.get_addr_key()
         msg = "UserList"
         for key in active_users:
-            if key != requesting_client:
-                msg += ","
-                msg += active_users[key]
-        
+            # if key != requesting_client:
+            msg += ","
+            msg += active_users[key]
+
         await self.send_message(msg)
         request_q.put("Sent registry to client " + active_users[requesting_client])
-    
+
     async def forward_message(self, user, msg):
-        msg = "Msg," + active_users[self.get_addr_key()] + "," + msg 
+        msg = "Msg," + active_users[self.get_addr_key()] + "," + msg
         print("forwarding message: ", msg)
         recipient = get_client(user)
         await recipient.send_message(msg)
 
     def registered(self):
-        if self.get_addr_key() in users:
-            return True
-        else:
-            False
+        return self.get_addr_key() in users
 
     def register_user(self, username):
         users[self.get_addr_key()] = username
-    
+
     def username_matches_record(self, username):
         if self.registered():
             return username == users[self.get_addr_key()]
@@ -167,25 +166,24 @@ class Server:
 
     def log_in_client(self, username):
         active_users[self.get_addr_key()] = username
-    
+
     def username_exists(self, username):
         for key in users:
             if users[key] == username:
                 return True
-        
+
         return False
-    
+
     def get_username(self):
         return active_users[self.get_addr_key()]
-    
+
     def user_is_logged_in(self, username):
         for key in active_users:
             if active_users[key] == username:
                 return True
-        
         return False
-    
-        
+
+
 def get_client(username):
     for key in active_users:
         if active_users[key] == username:

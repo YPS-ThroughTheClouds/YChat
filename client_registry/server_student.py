@@ -20,12 +20,12 @@ async def register_client(server, username):
     # Hint: server.registered() returns true if the client has already been registered
     # Hint: server.username_exists(username) returns true if the given username is taken
     # Hint: server.register_user(username) can be used to register a client
-    
+
     # `*** start ***`  
 
 
     # `*** end ***`  
-        
+
 
 # """
 # Description:
@@ -49,11 +49,12 @@ async def login_client(server, username):
     # Hint: server.registered() returns true if the client has already been registered
     # Hint: server.username_matches_record(username) returns true if the given username matches the registered one
     # Hint: server.log_in_client(username) can be used to log in a client
-    
+
     # `*** start ***`  
 
 
     # `*** end ***`  
+
 
 # """
 # Description:
@@ -77,6 +78,5 @@ async def send_registry_to_client(server):
 
     # `*** start ***`  
 
-        
-    # `*** end ***`  
 
+    # `*** end ***`

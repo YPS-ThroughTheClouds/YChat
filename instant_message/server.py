@@ -12,11 +12,12 @@ global login
 global request_users
 global message_queue
 
+
 async def socket_handler(reader, writer):
     server = Server(reader, writer)
     sockets.append(server)
 
-    while True: 
+    while True:
         msgs = await server.receive_message()
         for msg in msgs:
             time.sleep(0.5)
@@ -46,16 +47,17 @@ async def socket_handler(reader, writer):
 
 
 async def register_client(server, username):
-    if server.registered(): 
+    if server.registered():
         print("Client is already registered")
         await server.registration_failed(username)
     elif server.username_exists(username):
         print("Username Exists")
-        await server.registration_failed(username)      
+        await server.registration_failed(username)
     else:
         print("Adding user ", username)
         server.register_user(username)
         await server.registration_successful(username)
+
 
 async def login_client(server, username):
     if server.registered() & server.username_matches_record(username):
@@ -75,34 +77,39 @@ async def send_registry_to_client(server):
         print("Request denied")
         await server.request_denied()
 
+
 def start_gui(register, login, request_users, message_queue):
     rt = tk.Tk()
     rt.withdraw()
     pong_wnd = ServerBox(rt, register, login, request_users, message_queue)
     rt.mainloop()
 
-if __name__ == "__main__":
 
+def start_asyncio(loop):
+    coro = asyncio.start_server(socket_handler, localhost, port, loop=loop)
+    server = loop.run_until_complete(coro)
+    # Serve requests until Ctrl+C is pressed
+
+    print('Serving on {}'.format(server.sockets[0].getsockname()))
+    try:
+        loop.run_forever()
+    except KeyboardInterrupt:
+        pass
+        # Close the server
+    server.close()
+    loop.run_until_complete(server.wait_closed())
+    loop.close()
+
+
+if __name__ == "__main__":
     register = Condition()
     login = Condition()
     request_users = Condition()
     message_queue = Queue()
 
     # Create and start gui worker
-    gui_worker = Thread(target=lambda: start_gui(register, login, request_users, message_queue), daemon=True)
-    gui_worker.start()
+    loop = asyncio.get_event_loop()
+    asyncio_worker = Thread(target=start_asyncio, args=(loop,), daemon=True)
+    asyncio_worker.start()
 
-    loop = asyncio.get_event_loop() 
-    coro = asyncio.start_server(socket_handler, localhost, port, loop=loop) 
-    server = loop.run_until_complete(coro)
-    # Serve requests until Ctrl+C is pressed 
-
-    print('Serving on {}'.format(server.sockets[0].getsockname()))
-    try: 
-        loop.run_forever() 
-    except KeyboardInterrupt: 
-        pass 
-    # Close the server 
-    server.close() 
-    loop.run_until_complete(server.wait_closed()) 
-    loop.close()
+    start_gui(register, login, request_users, message_queue)

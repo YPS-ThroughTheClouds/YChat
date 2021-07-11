@@ -1,10 +1,10 @@
 from __future__ import print_function
-import queue
 
 import tkinter as tk
-from threading import Thread, Condition
-from time import sleep
-from utils4 import register_q, login_q, request_q 
+from threading import Thread
+
+from utils4 import register_q, login_q, request_q
+
 
 class ChatBox:
     def __init__(self, root, my_name, username, send_queue):
@@ -47,15 +47,15 @@ class ChatBox:
                                     bg="white", fg="black")
         self.msg_in_entry.focus_set()
         self.msg_in_entry.pack(fill=tk.BOTH, side=tk.LEFT)
-    
+
         self.wnd.protocol("WM_DELETE_WINDOW", self._on_closing)
-    
+
     def _on_send(self):
         msg = self.msg_in_entry.get("1.0", tk.END).strip()
         if not msg:
             return
         self.msg_in_entry.delete("1.0", tk.END)
-        
+
         txt = self.status_txt.get()
         txt += self.my_name
         txt += ": "
@@ -64,12 +64,13 @@ class ChatBox:
         self.status_txt.set(txt)
 
         self.send_queue.put(("Msg", self.username + "," + msg))
-    
+
     def _on_closing(self):
         self.wnd.withdraw()
 
+
 class ClientBox:
-    def __init__(self, root, send_queue, receive_queue):
+    def __init__(self, root, send_queue, receive_queue, server_queue, start_cv):
         self.register_action = lambda: print('Registering!')
         self.login_action = lambda: print('Logging In!')
         self.request_action = lambda: print('Requesting Registry!')
@@ -77,21 +78,70 @@ class ClientBox:
         self.receive_queue = receive_queue
         self.root = root
         self.chat_boxes = {}
+        self.server_queue = server_queue
+        self.start_cv = start_cv
 
         # Create message Box
         self.message_wnd = tk.Toplevel(root)
         self.message_wnd.title('Client')
 
+        # Create start Frame
+        self.start_frame = tk.Frame(master=self.message_wnd, width=50, height=30, bg="white")
+        self.start_frame.pack(fill=tk.BOTH)
+
+        # Create status label
+        self.status_txt = tk.StringVar(value='Choose which server to connect to.\n')
+        self.status_lbl = tk.Label(master=self.start_frame,
+                                   width=50, height=15,
+                                   textvariable=self.status_txt,
+                                   font=("Helvetica", 10),
+                                   bg="white", fg="black")
+        self.status_lbl.pack(fill=tk.BOTH)
+
+        # Create local button
+        self.local_btn = tk.Button(master=self.start_frame,
+                                  width=8, height=2,
+                                  bg="green", fg="white",
+                                  text="Local", font=("Helvetica", 10, "bold"),
+                                  command=lambda: self._on_local())
+        self.local_btn.pack(fill=tk.BOTH)
+
+        # Create remote button
+        self.remote_btn = tk.Button(master=self.start_frame,
+                                  width=8, height=2,
+                                  bg="green", fg="white",
+                                  text="Remote", font=("Helvetica", 10, "bold"),
+                                  command=lambda: self._on_remote())
+        self.remote_btn.pack(fill=tk.BOTH)
+
+        # Create and start worker
+        self.init_worker = Thread(target=lambda: self._process_start(), daemon=True)
+        self.init_worker.start()
+    
+    def _on_local(self):
+        self.server_queue.put("Local")
+
+    def _on_remote(self):
+        self.server_queue.put("Remote")
+
+    def _process_start(self):
+        with self.start_cv:
+            self.start_cv.wait()
+        
+        self._create_ping_frame()
+        self.start_frame.destroy()
+
+    def _create_ping_frame(self):
         # Create Ping Frame
         self.reg_frame = tk.Frame(master=self.message_wnd, width=30, height=20, bg="white")
         self.reg_frame.pack(fill=tk.BOTH)
 
         # Create Register button
         self.register_btn = tk.Button(master=self.reg_frame,
-                                  width=8, height=2,
-                                  bg="green", fg="white",
-                                  text="Register", font=("Helvetica", 10, "bold"),
-                                  command=lambda: self._on_register())
+                                      width=8, height=2,
+                                      bg="green", fg="white",
+                                      text="Register", font=("Helvetica", 10, "bold"),
+                                      command=lambda: self._on_register())
         self.register_btn.pack(fill=tk.BOTH)
 
         # Also bind 'Enter' key to self._add_message_on_send()
@@ -106,14 +156,21 @@ class ClientBox:
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 
+        # Create username label
+        self.username_label = tk.Label(master=self.reg_frame, text="Username: ",
+                                        height=1,font=("Helvetica", 10),
+                                        bg="gray87", fg="black",
+                                        borderwidth=2, relief="ridge")
+        self.username_label.pack( side = tk.LEFT)
+
         # Create message input box
         self.msg_in_entry = tk.Text(master=self.reg_frame,
                                     width=30, height=1,
-                                    font=("Helvetica", 15),
-                                    bg="white", fg="black")
+                                    font=("Helvetica", 10),
+                                    bg="gray87", fg="black")
         self.msg_in_entry.focus_set()
-        self.msg_in_entry.pack(fill=tk.BOTH, side=tk.LEFT)
-    
+        self.msg_in_entry.pack(fill=tk.BOTH, side=tk.RIGHT)
+
         self.message_wnd.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         # create receive queue polling thread
@@ -142,18 +199,24 @@ class ClientBox:
                 txt += "Login Failed \n"
                 self.status_txt.set(txt)
             elif msg_type == "UserList":
-                clients = msg_data.split(',') 
+                clients = msg_data.split(',')
                 print(clients)
-                self.usr_lstbox.delete(0,tk.END)
+                self.usr_lstbox.delete(0, tk.END)
                 for item in clients:
-                    self.usr_lstbox.insert(tk.END, item)
+                    if item=='':
+                        continue
+                    elif item == self.username:
+                        self.usr_lstbox.insert(0, item)
+                    else:
+                        self.usr_lstbox.insert(tk.END, item)
+
             elif msg_type == "Msg":
                 msgs = msg_data.split(',')
                 sender = msgs[0]
                 msg = msgs[1]
                 print("received message ", msg)
                 if sender not in self.chat_boxes.keys():
-                    self.chat_boxes[sender] = ChatBox(self.root, self.username, sender, self.send_queue) 
+                    self.chat_boxes[sender] = ChatBox(self.root, self.username, sender, self.send_queue)
 
                 txt = self.chat_boxes[sender].status_txt.get()
                 txt += sender
@@ -161,11 +224,11 @@ class ClientBox:
                 txt += msg
                 txt += "\n"
                 self.chat_boxes[sender].status_txt.set(txt)
-                
+
     def on_closing(self):
         print("closing")
-        self.send_queue.put(("CloseConnection",""))
-        self.root.destroy()
+        self.send_queue.put(("CloseConnection", ""))
+        self.message_wnd.destroy()
 
     def _create_login_frame(self):
         self.message_wnd.title('Client ' + self.username)
@@ -175,10 +238,10 @@ class ClientBox:
 
         # Create Login button
         self.login_btn = tk.Button(master=self.login_frame,
-                                  width=8, height=2,
-                                  bg="green", fg="white",
-                                  text="Login", font=("Helvetica", 10, "bold"),
-                                  command=lambda: self._on_login())
+                                   width=8, height=2,
+                                   bg="green", fg="white",
+                                   text="Login", font=("Helvetica", 10, "bold"),
+                                   command=lambda: self._on_login())
         self.login_btn.pack(fill=tk.BOTH)
 
         self.message_wnd.bind('<Return>', lambda event: self._on_login())
@@ -192,22 +255,29 @@ class ClientBox:
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 
+        # Create username label
+        self.username_label = tk.Label(master=self.login_frame, text="Username: ",
+                                        height=1,font=("Helvetica", 10),
+                                        bg="gray87", fg="black",
+                                        borderwidth=2, relief="ridge")
+        self.username_label.pack( side = tk.LEFT)
+
         # Create message input box
         self.msg_in_entry = tk.Text(master=self.login_frame,
                                     width=30, height=1,
-                                    font=("Helvetica", 20),
-                                    bg="white", fg="black")
+                                    font=("Helvetica", 10),
+                                    bg="gray87", fg="black")
         self.msg_in_entry.focus_set()
-        self.msg_in_entry.pack(fill=tk.BOTH, side=tk.LEFT)
+        self.msg_in_entry.pack(fill=tk.BOTH, side=tk.RIGHT)
 
     def _on_register(self):
         self.register_action()
-        
+
         msg = self.msg_in_entry.get("1.0", tk.END).strip()
         if not msg:
             return
         self.msg_in_entry.delete("1.0", tk.END)
-        self.send_queue.put(("Register",msg))
+        self.send_queue.put(("Register", msg))
         self.username = msg
 
     def _create_request_frame(self):
@@ -217,10 +287,10 @@ class ClientBox:
 
         # Create request button
         self.request_btn = tk.Button(master=self.msg_frame,
-                                  width=8, height=2,
-                                  bg="green", fg="white",
-                                  text="Request User Registry", font=("Helvetica", 10, "bold"),
-                                  command=lambda: self._on_request())
+                                     width=8, height=2,
+                                     bg="green", fg="white",
+                                     text="Request User Registry", font=("Helvetica", 10, "bold"),
+                                     command=lambda: self._on_request())
         self.request_btn.pack(fill=tk.BOTH)
 
         self.message_wnd.bind('<Return>', lambda event: self._on_request())
@@ -252,26 +322,25 @@ class ClientBox:
             idx = sel[0]
             data = event.widget.get(idx)
             print(data)
-            print (self.chat_boxes.keys())
+            print(self.chat_boxes.keys())
             if data not in self.chat_boxes.keys():
-                self.chat_boxes[data] = ChatBox(self.root, self.username, data, self.send_queue) 
+                self.chat_boxes[data] = ChatBox(self.root, self.username, data, self.send_queue)
             else:
                 chatbox = self.chat_boxes[data]
                 chatbox.wnd.deiconify()
-    
+
     def _on_login(self):
         self.login_action()
-        
+
         msg = self.msg_in_entry.get("1.0", tk.END).strip()
         if not msg:
             return
         self.msg_in_entry.delete("1.0", tk.END)
-        self.send_queue.put(("Login",msg))
+        self.send_queue.put(("Login", msg))
 
     def _on_request(self):
         self.request_action()
-        self.send_queue.put(("Request",""))
-
+        self.send_queue.put(("Request", ""))
 
 
 class ServerBox:
@@ -344,7 +413,7 @@ class ServerBox:
             self.status_txt.set(txt)
 
             self.login_action()
-    
+
     def _process_request_users(self):
         while True:
             with self.request_users_cv:
