@@ -1,4 +1,6 @@
 localhost = '127.0.0.1'
+remotehost = "128.96.32.1" #TO DO: Change this!! 
+host = localhost
 port = 8888
 sockets = []
 

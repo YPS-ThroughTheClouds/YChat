@@ -18,7 +18,6 @@ async def pingpong_client(ping, pong, server_queue, start_cv, loop):
         print("Error: This should never occur")
     
     with start_cv:
-
         start_cv.notify()
 
     reader, writer = await asyncio.open_connection(host, port, loop=loop)
