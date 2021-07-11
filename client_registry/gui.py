@@ -61,7 +61,7 @@ class ClientBox:
         print("closing")
         with self.button_cv:
             self.button_cv.notify()
-        self.root.destroy()
+        self.message_wnd.destroy()
 
     def _create_login_frame(self):
         # Create Login Frame

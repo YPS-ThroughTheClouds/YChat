@@ -166,7 +166,7 @@ class ClientBox:
     def on_closing(self):
         print("closing")
         self.send_queue.put(("CloseConnection", ""))
-        self.root.destroy()
+        self.message_wnd.destroy()
 
     def _create_login_frame(self):
         self.message_wnd.title('Client ' + self.username)
