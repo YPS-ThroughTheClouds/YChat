@@ -1,6 +1,7 @@
 
 localhost = '127.0.0.1'
 port = 8888
+remote_host = '128.36.108.23'
 
 
 class Client:

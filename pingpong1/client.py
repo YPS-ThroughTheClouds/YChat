@@ -2,12 +2,12 @@ import asyncio
 import tkinter as tk
 from threading import Thread, Condition
 from gui import ClientBox
-from utils import Client, localhost, port
+from utils import Client, localhost, remote_host,port
 from client_student import client_sends_a_ping
 import time
 
 async def pingpong_client(ping, pong, loop): 
-    reader, writer = await asyncio.open_connection(localhost, port, loop=loop) 
+    reader, writer = await asyncio.open_connection(remote_host, port, loop=loop) 
     client = Client(reader, writer)
 
     while True:
