@@ -54,4 +54,5 @@ if __name__ == "__main__":
 
     # Create and start gui
     start_gui(ping, pong)
-    asyncio_thread = Thread(target=start_asyncio, daemon=True)
+    asyncio_worker = Thread(target=start_asyncio, daemon=True)
+    asyncio_worker.start()
