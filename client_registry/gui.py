@@ -47,13 +47,19 @@ class ClientBox:
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 
+        # Create username label
+        self.username_label = tk.Label(master=self.reg_frame, text="Username: ",
+                                        height=1,font=("Helvetica", 10),
+                                        bg="gray87", fg="black",
+                                        borderwidth=2, relief="ridge")
+        self.username_label.pack( side = tk.LEFT)
         # Create message input box
         self.msg_in_entry = tk.Text(master=self.reg_frame,
                                     width=30, height=1,
-                                    font=("Helvetica", 15),
-                                    bg="white", fg="black")
+                                    font=("Helvetica", 10),
+                                    bg="gray87", fg="black")
         self.msg_in_entry.focus_set()
-        self.msg_in_entry.pack(fill=tk.BOTH, side=tk.LEFT)
+        self.msg_in_entry.pack(fill=tk.BOTH, side=tk.RIGHT)
 
         self.message_wnd.protocol("WM_DELETE_WINDOW", self.on_closing)
 
@@ -86,14 +92,21 @@ class ClientBox:
                                    font=("Helvetica", 10),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
+        
+        # Create username label
+        self.username_label = tk.Label(master=self.login_frame, text="Username: ",
+                                        height=1,font=("Helvetica", 10),
+                                        bg="gray87", fg="black",
+                                        borderwidth=2, relief="ridge")
+        self.username_label.pack( side = tk.LEFT)
 
         # Create message input box
         self.msg_in_entry = tk.Text(master=self.login_frame,
                                     width=30, height=1,
-                                    font=("Helvetica", 20),
-                                    bg="white", fg="black")
+                                    font=("Helvetica", 10),
+                                    bg="gray87", fg="black")
         self.msg_in_entry.focus_set()
-        self.msg_in_entry.pack(fill=tk.BOTH, side=tk.LEFT)
+        self.msg_in_entry.pack(fill=tk.BOTH, side=tk.RIGHT)
 
     def _on_register(self):
         self.register_action()
