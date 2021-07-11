@@ -39,12 +39,14 @@ class Server:
             return "Uknown message"
 
     async def send_message(self, data):
+        print("sending ", data)
         self.writer.write(data.encode())
         await self.writer.drain()
 
     async def forward_message(self, msg):
         index = get_other_client(self.writer.get_extra_info('peername'))
         if len(index) != 0:
+            print("sending to ", sockets[index[0]].writer.get_extra_info('peername'))
             await sockets[index[0]].send_message(msg)
 
 

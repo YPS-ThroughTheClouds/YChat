@@ -17,15 +17,15 @@ async def pingpong_socket_handler(reader, writer):
     while True:
         msg = await server.receive_message()
         if msg == "Ping":
+            time.sleep(0.75)
             with ping:
                 ping.notify()
-            time.sleep(1)
             await server_forwards_message(server, msg)
 
         if msg == "Pong":
+            time.sleep(0.75)
             with pong:
                 pong.notify()
-            time.sleep(1)
             await server_forwards_message(server, msg)
 
 
