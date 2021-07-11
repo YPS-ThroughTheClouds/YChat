@@ -18,7 +18,7 @@ async def pingpong_client(ping, pong, loop):
         await client_sends_a_ping(client)
         data = await client.receive_message()
         if data == "Pong":
-            time.sleep(1)
+            time.sleep(0.75)
             with pong:
                 pong.notifyAll()
 
