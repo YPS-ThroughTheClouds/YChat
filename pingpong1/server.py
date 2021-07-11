@@ -31,8 +31,7 @@ def start_gui(ping, pong):
     rt.mainloop()
 
 
-def start_asyncio():
-    loop = asyncio.get_event_loop()
+def start_asyncio(loop):
     core = asyncio.start_server(pingpong_socket_handler, localhost, port, loop=loop)
     server = loop.run_until_complete(core)
     # Serve requests until Ctrl+C is pressed
@@ -52,7 +51,9 @@ if __name__ == "__main__":
     ping = Condition()
     pong = Condition()
 
+    loop = asyncio.get_event_loop()
+    asyncio_worker = Thread(target=start_asyncio, args=(loop,), daemon=True)
+    asyncio_worker.start()
+
     # Create and start gui
     start_gui(ping, pong)
-    asyncio_worker = Thread(target=start_asyncio, daemon=True)
-    asyncio_worker.start()
