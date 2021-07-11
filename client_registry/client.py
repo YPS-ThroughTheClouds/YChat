@@ -3,13 +3,13 @@ import tkinter as tk
 import time
 from threading import Thread, Condition, Lock
 from gui import ClientBox
-from utils3 import Client, localhost, port
+from utils3 import Client, localhost, remote_host, port
 from client_student import register_user, login, request_user_list
 from queue import Queue
 
 
 async def client(button_cv, completed_cv, mutex, flags, send_queue, receive_queue, loop): 
-    reader, writer = await asyncio.open_connection(localhost, port, loop=loop) 
+    reader, writer = await asyncio.open_connection(remote_host, port, loop=loop) 
     client = Client(reader, writer, receive_queue)
     
     while True:

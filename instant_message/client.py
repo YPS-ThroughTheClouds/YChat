@@ -3,7 +3,7 @@ import tkinter as tk
 import time
 from threading import Thread, Condition, Lock
 from gui import ClientBox
-from utils4 import Client, localhost, port
+from utils4 import Client, localhost, remote_host, port
 from queue import Queue
 from concurrent.futures import ThreadPoolExecutor
 
@@ -46,7 +46,7 @@ async def request_user_list(client):
 
 
 async def client(receive_queue, loop): 
-    reader, writer = await asyncio.open_connection(localhost, port, loop=loop) 
+    reader, writer = await asyncio.open_connection(remote_host, port, loop=loop) 
     client = Client(reader, writer, receive_queue)
     return client
 

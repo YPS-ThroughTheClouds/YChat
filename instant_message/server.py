@@ -3,7 +3,7 @@ import tkinter as tk
 import time
 from threading import Thread, Condition
 from gui import ServerBox
-from utils4 import Server, localhost, port, sockets, active_users
+from utils4 import Server, localhost, remote_host, port, sockets, active_users
 from server_student import forward_message_to_client
 from queue import Queue
 
@@ -93,7 +93,7 @@ if __name__ == "__main__":
     gui_worker.start()
 
     loop = asyncio.get_event_loop() 
-    coro = asyncio.start_server(socket_handler, localhost, port, loop=loop) 
+    coro = asyncio.start_server(socket_handler, remote_host, port, loop=loop) 
     server = loop.run_until_complete(coro)
     # Serve requests until Ctrl+C is pressed 
 

@@ -2,7 +2,7 @@ import asyncio
 import tkinter as tk
 from threading import Thread, Condition
 from gui import ServerBox
-from utils2 import Server, localhost, port, sockets
+from utils2 import Server, localhost, remote_host, port, sockets
 from server_student import server_forwards_message
 import time
 
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     gui_worker.start()
 
     loop = asyncio.get_event_loop() 
-    coro = asyncio.start_server(pingpong_socket_handler, localhost, port, loop=loop) 
+    coro = asyncio.start_server(pingpong_socket_handler, remote_host, port, loop=loop) 
     server = loop.run_until_complete(coro)
     # Serve requests until Ctrl+C is pressed 
 
