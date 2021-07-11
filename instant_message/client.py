@@ -1,5 +1,6 @@
 import asyncio
 import tkinter as tk
+import queue
 from queue import Queue
 from threading import Thread, Condition, Lock
 
@@ -16,7 +17,11 @@ async def client_receiver(client):
 async def client_sender(client, send_queue):
     while True:
         await asyncio.sleep(1)
-        msg_type, msg_data = send_queue.get()
+        try:
+            msg_type, msg_data = send_queue.get(False)
+        except queue.Empty:
+            msg_type = None
+
 
         if msg_type:
             if msg_type == "Register":
@@ -35,7 +40,6 @@ async def client_sender(client, send_queue):
 
             elif msg_type == "CloseConnection":
                 await client.send_message("CloseConnection")
-
 
 async def register_user(client, username):
     await client.register(username)
