@@ -1,7 +1,7 @@
-
 localhost = '127.0.0.1'
 port = 8888
 sockets = []
+
 
 class Client:
     def __init__(self, reader, writer):
@@ -21,7 +21,6 @@ class Client:
     async def send_message(self, data):
         self.writer.write(data.encode())
         await self.writer.drain()
-
 
 
 class Server:
@@ -45,13 +44,15 @@ class Server:
 
     async def forward_message(self, msg):
         index = get_other_client(self.writer.get_extra_info('peername'))
-        if len(index) != 0: 
+        if len(index) != 0:
             await sockets[index[0]].send_message(msg)
+
 
 def get_other_client(peername):
     get_indexes = lambda x, xs: [i for (y, i) in zip(xs, range(len(xs))) if x != y.writer.get_extra_info('peername')]
     indexes = get_indexes(peername, sockets)
     return indexes
+
 
 def remove_from_socket_list(peername):
     get_indexes = lambda x, xs: [i for (y, i) in zip(xs, range(len(xs))) if x == y.writer.get_extra_info('peername')]

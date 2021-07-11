@@ -1,4 +1,3 @@
-
 localhost = '127.0.0.1'
 port = 8888
 
@@ -21,7 +20,6 @@ class Client:
     async def send_message(self, data):
         self.writer.write(data.encode())
         await self.writer.drain()
-
 
 
 class Server:

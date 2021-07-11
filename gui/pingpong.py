@@ -2,9 +2,6 @@ from __future__ import print_function
 
 import tkinter as tk
 from threading import Thread, Condition
-from time import sleep
-
-from util import noop
 
 
 class PingBox:

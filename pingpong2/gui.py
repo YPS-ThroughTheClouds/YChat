@@ -48,7 +48,7 @@ class Client1Box:
         txt = self.status_txt.get()
         txt += 'Sent Ping message.\n'
         self.status_txt.set(txt)
-    
+
     def _process_pong(self):
         while True:
             with self.pong_recvd:
@@ -58,12 +58,13 @@ class Client1Box:
             txt += 'Received Pong message, all done!\n'
             self.status_txt.set(txt)
 
+
 class Client2Box:
     def __init__(self, root, ping_action, pong_action, ping_recvd, pong_sent):
         self.ping_action = ping_action
         self.pong_action = pong_action
         self.ping_recvd = ping_recvd
-        self.pong_sent= pong_sent
+        self.pong_sent = pong_sent
 
         # Create PingBox
         self.pong_wnd = tk.Toplevel(root)
@@ -94,6 +95,7 @@ class Client2Box:
             txt = self.status_txt.get()
             txt += 'Received Ping message, sending Pong message!\n'
             self.status_txt.set(txt)
+
 
 class ServerBox:
     def __init__(self, root, ping_action, pong_action, ping_recvd, pong_recvd):
