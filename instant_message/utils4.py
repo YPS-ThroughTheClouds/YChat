@@ -131,9 +131,9 @@ class Server:
         requesting_client = self.get_addr_key()
         msg = "UserList"
         for key in active_users:
-            if key != requesting_client:
-                msg += ","
-                msg += active_users[key]
+            # if key != requesting_client:
+            msg += ","
+            msg += active_users[key]
 
         await self.send_message(msg)
         request_q.put("Sent registry to client " + active_users[requesting_client])

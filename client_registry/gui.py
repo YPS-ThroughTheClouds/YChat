@@ -70,6 +70,8 @@ class ClientBox:
         self.message_wnd.destroy()
 
     def _create_login_frame(self):
+        self.message_wnd.title('Client ' + self.username)
+
         # Create Login Frame
         self.login_frame = tk.Frame(master=self.message_wnd, width=30, height=15, bg="white")
         self.login_frame.pack(fill=tk.BOTH)
@@ -119,6 +121,7 @@ class ClientBox:
             return
         self.msg_in_entry.delete("1.0", tk.END)
         self.send_queue.put(msg)
+        self.username = msg
 
         with self.button_cv:
             self.button_cv.notify()
@@ -217,18 +220,17 @@ class ClientBox:
         with self.completed_cv:
             self.completed_cv.wait()
 
-        # txt = self.status_txt.get()
-        # txt = 'Client Registry \n'
-
         msg = self.receive_queue.get()
         clients = msg.split(',')
         print(clients)
         self.usr_lstbox.delete(0, tk.END)
         for item in clients:
-            # txt += item
-            # txt += '\n'
-            self.usr_lstbox.insert(tk.END, item)
-        # self.status_txt.set(txt)
+            if item=='':
+                continue
+            elif item == self.username:
+                self.usr_lstbox.insert(0, item)
+            else:
+                self.usr_lstbox.insert(tk.END, item)
 
 
 class ServerBox:

@@ -154,7 +154,13 @@ class ClientBox:
                 print(clients)
                 self.usr_lstbox.delete(0, tk.END)
                 for item in clients:
-                    self.usr_lstbox.insert(tk.END, item)
+                    if item=='':
+                        continue
+                    elif item == self.username:
+                        self.usr_lstbox.insert(0, item)
+                    else:
+                        self.usr_lstbox.insert(tk.END, item)
+
             elif msg_type == "Msg":
                 msgs = msg_data.split(',')
                 sender = msgs[0]
