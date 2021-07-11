@@ -70,7 +70,7 @@ class ChatBox:
 
 
 class ClientBox:
-    def __init__(self, root, send_queue, receive_queue):
+    def __init__(self, root, send_queue, receive_queue, server_queue, start_cv):
         self.register_action = lambda: print('Registering!')
         self.login_action = lambda: print('Logging In!')
         self.request_action = lambda: print('Requesting Registry!')
@@ -78,11 +78,60 @@ class ClientBox:
         self.receive_queue = receive_queue
         self.root = root
         self.chat_boxes = {}
+        self.server_queue = server_queue
+        self.start_cv = start_cv
 
         # Create message Box
         self.message_wnd = tk.Toplevel(root)
         self.message_wnd.title('Client')
 
+        # Create start Frame
+        self.start_frame = tk.Frame(master=self.message_wnd, width=50, height=30, bg="white")
+        self.start_frame.pack(fill=tk.BOTH)
+
+        # Create status label
+        self.status_txt = tk.StringVar(value='Choose which server to connect to.\n')
+        self.status_lbl = tk.Label(master=self.start_frame,
+                                   width=50, height=15,
+                                   textvariable=self.status_txt,
+                                   font=("Helvetica", 10),
+                                   bg="white", fg="black")
+        self.status_lbl.pack(fill=tk.BOTH)
+
+        # Create local button
+        self.local_btn = tk.Button(master=self.start_frame,
+                                  width=8, height=2,
+                                  bg="green", fg="white",
+                                  text="Local", font=("Helvetica", 10, "bold"),
+                                  command=lambda: self._on_local())
+        self.local_btn.pack(fill=tk.BOTH)
+
+        # Create remote button
+        self.remote_btn = tk.Button(master=self.start_frame,
+                                  width=8, height=2,
+                                  bg="green", fg="white",
+                                  text="Remote", font=("Helvetica", 10, "bold"),
+                                  command=lambda: self._on_remote())
+        self.remote_btn.pack(fill=tk.BOTH)
+
+        # Create and start worker
+        self.init_worker = Thread(target=lambda: self._process_start(), daemon=True)
+        self.init_worker.start()
+    
+    def _on_local(self):
+        self.server_queue.put("Local")
+
+    def _on_remote(self):
+        self.server_queue.put("Remote")
+
+    def _process_start(self):
+        with self.start_cv:
+            self.start_cv.wait()
+        
+        self._create_ping_frame()
+        self.start_frame.destroy()
+
+    def _create_ping_frame(self):
         # Create Ping Frame
         self.reg_frame = tk.Frame(master=self.message_wnd, width=30, height=20, bg="white")
         self.reg_frame.pack(fill=tk.BOTH)
