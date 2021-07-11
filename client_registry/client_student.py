@@ -71,4 +71,4 @@ async def request_user_list(client):
 
     await client.request_registry()
 
-    # `*** end ***`  
+    # `*** end ***`

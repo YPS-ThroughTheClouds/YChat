@@ -36,19 +36,10 @@ def start_gui(ping, pong):
     rt.mainloop()
 
 
-if __name__ == "__main__":
-
-    ping = Condition()
-    pong = Condition()
-
-    # Create and start gui worker
-    gui_worker = Thread(target=lambda: start_gui(ping, pong), daemon=True)
-    gui_worker.start()
-
-    loop = asyncio.get_event_loop()
+def start_asyncio(loop):
     coro = asyncio.start_server(pingpong_socket_handler, localhost, port, loop=loop)
     server = loop.run_until_complete(coro)
-    # Serve requests until Ctrl+C is pressed 
+    # Serve requests until Ctrl+C is pressed
 
     print('Serving on {}'.format(server.sockets[0].getsockname()))
     try:
@@ -59,3 +50,16 @@ if __name__ == "__main__":
     server.close()
     loop.run_until_complete(server.wait_closed())
     loop.close()
+
+
+if __name__ == "__main__":
+    ping = Condition()
+    pong = Condition()
+
+    loop = asyncio.get_event_loop()
+
+    asyncio_worker = Thread(target=start_asyncio, args=(loop,), daemon=True)
+    asyncio_worker.start()
+
+    # Create and start gui
+    start_gui(ping, pong)

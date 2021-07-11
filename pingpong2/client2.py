@@ -28,14 +28,18 @@ def start_gui(ping, pong):
     rt.mainloop()
 
 
+def start_asyncio(loop):
+    loop.run_until_complete(pingpong_client(ping, pong, loop))
+    loop.close()
+
+
 if __name__ == "__main__":
     ping = Condition()
     pong = Condition()
 
-    # Create and start message worker
-    gui_worker = Thread(target=lambda: start_gui(ping, pong), daemon=True)
+    loop = asyncio.get_event_loop()
+    gui_worker = Thread(target=start_asyncio, args=(loop,), daemon=True)
     gui_worker.start()
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(pingpong_client(ping, pong, loop))
-    loop.close()
+    # Create and start message worker
+    start_gui(ping, pong)

@@ -20,21 +20,21 @@ async def register_client(server, username):
     # Hint: server.registered() returns true if the client has already been registered
     # Hint: server.username_exists(username) returns true if the given username is taken
     # Hint: server.register_user(username) can be used to register a client
-    
+
     # `*** start ***`  
-    if server.registered(): 
+    if server.registered():
         print("Client is already registered")
         await server.registration_failed(username)
     elif server.username_exists(username):
         print("Username Exists")
-        await server.registration_failed(username)      
+        await server.registration_failed(username)
     else:
         print("Adding user ", username)
         server.register_user(username)
         await server.registration_successful(username)
 
     # `*** end ***`  
-        
+
 
 # """
 # Description:
@@ -58,7 +58,7 @@ async def login_client(server, username):
     # Hint: server.registered() returns true if the client has already been registered
     # Hint: server.username_matches_record(username) returns true if the given username matches the registered one
     # Hint: server.log_in_client(username) can be used to log in a client
-    
+
     # `*** start ***`  
 
     if server.registered() & server.username_matches_record(username):
@@ -70,6 +70,7 @@ async def login_client(server, username):
         await server.login_failed(username)
 
     # `*** end ***`  
+
 
 # """
 # Description:
@@ -99,6 +100,5 @@ async def send_registry_to_client(server):
     else:
         print("Request denied")
         await server.request_denied()
-        
-    # `*** end ***`  
 
+    # `*** end ***`

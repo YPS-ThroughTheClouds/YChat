@@ -1,10 +1,9 @@
 from __future__ import print_function
-import queue
 
 import tkinter as tk
-from threading import Thread, Condition
-from time import sleep
-from utils3 import register_q, login_q, request_q 
+from threading import Thread
+
+from utils3 import register_q, login_q, request_q
 
 
 class ClientBox:
@@ -30,10 +29,10 @@ class ClientBox:
 
         # Create Register button
         self.register_btn = tk.Button(master=self.reg_frame,
-                                  width=8, height=2,
-                                  bg="green", fg="white",
-                                  text="Register", font=("Helvetica", 10, "bold"),
-                                  command=lambda: self._on_register())
+                                      width=8, height=2,
+                                      bg="green", fg="white",
+                                      text="Register", font=("Helvetica", 10, "bold"),
+                                      command=lambda: self._on_register())
         self.register_btn.pack(fill=tk.BOTH)
 
         # Also bind 'Enter' key to self._add_message_on_send()
@@ -55,15 +54,14 @@ class ClientBox:
                                     bg="white", fg="black")
         self.msg_in_entry.focus_set()
         self.msg_in_entry.pack(fill=tk.BOTH, side=tk.LEFT)
-    
+
         self.message_wnd.protocol("WM_DELETE_WINDOW", self.on_closing)
-    
+
     def on_closing(self):
         print("closing")
         with self.button_cv:
             self.button_cv.notify()
         self.root.destroy()
-
 
     def _create_login_frame(self):
         # Create Login Frame
@@ -72,10 +70,10 @@ class ClientBox:
 
         # Create Login button
         self.login_btn = tk.Button(master=self.login_frame,
-                                  width=8, height=2,
-                                  bg="green", fg="white",
-                                  text="Login", font=("Helvetica", 10, "bold"),
-                                  command=lambda: self._on_login())
+                                   width=8, height=2,
+                                   bg="green", fg="white",
+                                   text="Login", font=("Helvetica", 10, "bold"),
+                                   command=lambda: self._on_login())
         self.login_btn.pack(fill=tk.BOTH)
 
         self.message_wnd.bind('<Return>', lambda event: self._on_login())
@@ -99,10 +97,10 @@ class ClientBox:
 
     def _on_register(self):
         self.register_action()
-        
+
         with self.mutex:
             self.action_flags[0] = True
-        
+
         msg = self.msg_in_entry.get("1.0", tk.END).strip()
         if not msg:
             return
@@ -114,14 +112,14 @@ class ClientBox:
 
         with self.completed_cv:
             self.completed_cv.wait()
-        
+
         msg = self.receive_queue.get()
         txt = self.status_txt.get()
         txt += msg
         txt += '\n'
         self.status_txt.set(txt)
 
-        if msg == "Registration was successful!":    
+        if msg == "Registration was successful!":
             self.reg_frame.destroy()
             self._create_login_frame()
 
@@ -132,10 +130,10 @@ class ClientBox:
 
         # Create request button
         self.request_btn = tk.Button(master=self.msg_frame,
-                                  width=8, height=2,
-                                  bg="green", fg="white",
-                                  text="Request User Registry", font=("Helvetica", 10, "bold"),
-                                  command=lambda: self._on_request())
+                                     width=8, height=2,
+                                     bg="green", fg="white",
+                                     text="Request User Registry", font=("Helvetica", 10, "bold"),
+                                     command=lambda: self._on_request())
         self.request_btn.pack(fill=tk.BOTH)
 
         self.message_wnd.bind('<Return>', lambda event: self._on_request())
@@ -167,12 +165,12 @@ class ClientBox:
             idx = sel[0]
             data = event.widget.get(idx)
             print(data)
-    
+
     def _on_login(self):
         self.login_action()
         with self.mutex:
             self.action_flags[1] = True
-        
+
         msg = self.msg_in_entry.get("1.0", tk.END).strip()
         if not msg:
             return
@@ -191,10 +189,10 @@ class ClientBox:
         txt += '\n'
         self.status_txt.set(txt)
 
-        if msg == "Login was successful!":    
+        if msg == "Login was successful!":
             self.login_frame.destroy()
             self._create_request_frame()
-    
+
     def _on_request(self):
         self.request_action()
         with self.mutex:
@@ -208,11 +206,11 @@ class ClientBox:
 
         # txt = self.status_txt.get()
         # txt = 'Client Registry \n'
-        
+
         msg = self.receive_queue.get()
-        clients = msg.split(',') 
+        clients = msg.split(',')
         print(clients)
-        self.usr_lstbox.delete(0,tk.END)
+        self.usr_lstbox.delete(0, tk.END)
         for item in clients:
             # txt += item
             # txt += '\n'
@@ -284,7 +282,7 @@ class ServerBox:
             self.status_txt.set(txt)
 
             self.login_action()
-    
+
     def _process_request_users(self):
         while True:
             with self.request_users_cv:
@@ -297,4 +295,3 @@ class ServerBox:
             self.status_txt.set(txt)
 
             self.request_action()
-

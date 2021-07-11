@@ -85,21 +85,10 @@ def start_gui(register, login, request_users, message_queue):
     rt.mainloop()
 
 
-if __name__ == "__main__":
-
-    register = Condition()
-    login = Condition()
-    request_users = Condition()
-    message_queue = Queue()
-
-    # Create and start gui worker
-    gui_worker = Thread(target=lambda: start_gui(register, login, request_users, message_queue), daemon=True)
-    gui_worker.start()
-
-    loop = asyncio.get_event_loop()
+def start_asyncio(loop):
     coro = asyncio.start_server(socket_handler, localhost, port, loop=loop)
     server = loop.run_until_complete(coro)
-    # Serve requests until Ctrl+C is pressed 
+    # Serve requests until Ctrl+C is pressed
 
     print('Serving on {}'.format(server.sockets[0].getsockname()))
     try:
@@ -110,3 +99,17 @@ if __name__ == "__main__":
     server.close()
     loop.run_until_complete(server.wait_closed())
     loop.close()
+
+
+if __name__ == "__main__":
+    register = Condition()
+    login = Condition()
+    request_users = Condition()
+    message_queue = Queue()
+
+    # Create and start gui worker
+    loop = asyncio.get_event_loop()
+    asyncio_worker = Thread(target=start_asyncio, args=(loop,), daemon=True)
+    asyncio_worker.start()
+
+    start_gui(register, login, request_users, message_queue)

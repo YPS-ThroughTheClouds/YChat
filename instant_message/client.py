@@ -1,11 +1,10 @@
 import asyncio
 import tkinter as tk
-import time
+from queue import Queue
 from threading import Thread, Condition, Lock
+
 from gui import ClientBox
 from utils4 import Client, localhost, port
-from queue import Queue
-from concurrent.futures import ThreadPoolExecutor
 
 
 async def client_receiver(client):
@@ -50,7 +49,7 @@ async def request_user_list(client):
     await client.request_registry()
 
 
-async def client(receive_queue, loop):
+async def create_client(receive_queue, loop):
     reader, writer = await asyncio.open_connection(localhost, port, loop=loop)
     client = Client(reader, writer, receive_queue)
     return client
@@ -63,6 +62,17 @@ def start_gui(send_queue, receive_queue):
     rt.mainloop()
 
 
+def start_asyncio(loop, send_queue, receive_queue):
+    client = loop.run_until_complete(create_client(receive_queue, loop))
+
+    loop.run_until_complete(asyncio.gather(
+        client_sender(client, send_queue),
+        client_receiver(client), loop=loop
+    ))
+
+    loop.close()
+
+
 if __name__ == "__main__":
     button_cv = Condition()
     completed_cv = Condition()
@@ -72,15 +82,8 @@ if __name__ == "__main__":
     receive_queue = Queue()
 
     # Create and start message worker
-    gui_worker = Thread(target=lambda: start_gui(send_queue, receive_queue), daemon=True)
-    gui_worker.start()
-
     loop = asyncio.get_event_loop()
-    client = loop.run_until_complete(client(receive_queue, loop))
+    asyncio_worker = Thread(target=start_asyncio, args=(loop, send_queue, receive_queue,), daemon=True)
+    asyncio_worker.start()
 
-    loop.run_until_complete(asyncio.gather(
-        client_sender(client, send_queue),
-        client_receiver(client)
-    ))
-
-    loop.close()
+    start_gui(send_queue, receive_queue)

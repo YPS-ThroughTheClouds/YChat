@@ -1,41 +1,40 @@
-import asyncio 
+import asyncio
 import tkinter as tk
-import time
+from queue import Queue
 from threading import Thread, Condition, Lock
+from client_student import register_user, login, request_user_list
 from gui import ClientBox
 from utils3 import Client, localhost, port
-from client_student import register_user, login, request_user_list
-from queue import Queue
 
 
-async def client(button_cv, completed_cv, mutex, flags, send_queue, receive_queue, loop): 
-    reader, writer = await asyncio.open_connection(localhost, port, loop=loop) 
+async def client(button_cv, completed_cv, mutex, flags, send_queue, receive_queue, loop):
+    reader, writer = await asyncio.open_connection(localhost, port, loop=loop)
     client = Client(reader, writer, receive_queue)
-    
+
     while True:
         with button_cv:
             button_cv.wait()
-        
+
         mutex.acquire()
 
-        if flags[0] == True: #Register
+        if flags[0]:  # Register
             username = send_queue.get()
-            await register_user(client, username)   
-            await client.receive_message() 
+            await register_user(client, username)
+            await client.receive_message()
             flags[0] = False
 
-        elif flags[1] == True: #Login
+        elif flags[1]:  # Login
             username = send_queue.get()
             await login(client, username)
-            await client.receive_message() 
+            await client.receive_message()
             flags[1] = False
 
-        elif flags[2] == True: #Request
+        elif flags[2]:  # Request
             await request_user_list(client)
-            await client.receive_message() 
+            await client.receive_message()
             flags[2] = False
-        
-        else: #Close connection
+
+        else:  # Close connection
             await client.send_message("CloseConnection ")
 
         mutex.release()
@@ -43,11 +42,18 @@ async def client(button_cv, completed_cv, mutex, flags, send_queue, receive_queu
         with completed_cv:
             completed_cv.notify()
 
+
 def start_gui(button_cv, completed_cv, mutex, flags, send_queue, receive_queue):
     rt = tk.Tk()
     rt.withdraw()
     ping_wnd = ClientBox(rt, button_cv, completed_cv, mutex, flags, send_queue, receive_queue)
     rt.mainloop()
+
+
+def start_asyncio(loop):
+    loop.run_until_complete(client(button_cv, completed_cv, mutex, flags, send_queue, receive_queue, loop))
+    loop.close()
+
 
 if __name__ == "__main__":
     button_cv = Condition()
@@ -57,11 +63,10 @@ if __name__ == "__main__":
     send_queue = Queue()
     receive_queue = Queue()
 
-    # Create and start message worker
-    gui_worker = Thread(target=lambda: start_gui(button_cv, completed_cv, mutex, flags, send_queue, receive_queue), daemon=True)
-    gui_worker.start()
-
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(client(button_cv, completed_cv, mutex, flags, send_queue, receive_queue, loop)) 
+    asyncio_worker = Thread(target=start_asyncio, args=(loop,), daemon=True)
+    asyncio_worker.start()
 
-    loop.close()
+    # Create and start gui
+    start_gui(button_cv, completed_cv, mutex, flags, send_queue, receive_queue)
+

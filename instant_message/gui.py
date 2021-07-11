@@ -1,9 +1,8 @@
 from __future__ import print_function
-import queue
 
 import tkinter as tk
-from threading import Thread, Condition
-from time import sleep
+from threading import Thread
+
 from utils4 import register_q, login_q, request_q
 
 

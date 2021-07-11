@@ -1,4 +1,3 @@
-
 from collections import namedtuple
 from queue import Queue
 
@@ -14,6 +13,7 @@ register_q = Queue()
 login_q = Queue()
 request_q = Queue()
 
+
 class Client:
     def __init__(self, reader, writer, queue):
         self.reader = reader
@@ -27,7 +27,7 @@ class Client:
         print(receivedMessages)
 
         for message in receivedMessages:
-            messages = message.split(',') 
+            messages = message.split(',')
             if messages[0] == "RegistrationSuccessful":
                 self.queue.put("Registration was successful!")
             elif messages[0] == "RegistrationFailed":
@@ -44,7 +44,7 @@ class Client:
                     msg += messages[i]
                     msg += ","
                     i += 1
-                
+
                 self.queue.put(msg)
             else:
                 print("unknown messages")
@@ -52,7 +52,7 @@ class Client:
     async def send_message(self, data):
         self.writer.write(data.encode())
         await self.writer.drain()
-    
+
     async def register(self, username):
         out_buffer = "Register,"
         out_buffer += username
@@ -74,7 +74,7 @@ class Server:
     def __init__(self, reader, writer):
         self.reader = reader
         self.writer = writer
-    
+
     def get_addr_key(self):
         return self.writer.get_extra_info('peername')
 
@@ -87,7 +87,7 @@ class Server:
         separated_messages = []
 
         for message in receivedMessages:
-            messages = message.split(',') 
+            messages = message.split(',')
             if messages[0] == "Register":
                 separated_messages.append(MessageData("Register", messages[1: len(messages)]))
             elif messages[0] == "Login":
@@ -98,7 +98,7 @@ class Server:
                 separated_messages.append(MessageData("CloseConnection", []))
             else:
                 separated_messages.append(MessageData("Unknown", []))
-        
+
         return separated_messages
 
     async def send_message(self, data):
@@ -120,11 +120,11 @@ class Server:
     async def login_failed(self, username):
         await self.send_message("LoginFailed ")
         login_q.put("Failed to login client " + username)
-    
+
     async def request_denied(self):
         await self.send_message("RequestDenied ")
         request_q.put("Denied request of client")
-    
+
     async def send_registry(self):
         requesting_client = self.get_addr_key()
         msg = "UserList"
@@ -133,19 +133,16 @@ class Server:
                 msg += ","
                 msg += active_users[key]
         msg += " "
-        
+
         await self.send_message(msg)
         request_q.put("Sent registry to client " + active_users[requesting_client])
-    
+
     def registered(self):
-        if self.get_addr_key() in users:
-            return True
-        else:
-            False
+        return self.get_addr_key() in users
 
     def register_user(self, username):
         users[self.get_addr_key()] = username
-    
+
     def username_matches_record(self, username):
         if self.registered():
             return username == users[self.get_addr_key()]
@@ -153,17 +150,14 @@ class Server:
             return False
 
     def logged_in(self):
-        if self.get_addr_key() in active_users:
-            return True
-        else:
-            False
+        return self.get_addr_key() in active_users
 
     def log_in_client(self, username):
         active_users[self.get_addr_key()] = username
-    
+
     def username_exists(self, username):
         for key in users:
             if users[key] == username:
                 return True
-        
+
         return False
