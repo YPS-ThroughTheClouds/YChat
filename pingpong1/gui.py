@@ -89,7 +89,7 @@ class ServerBox:
             with self.ping_recvd:
                 self.ping_recvd.wait()
 
-            time.sleep(0.5)
+            time.sleep(0.75)
 
             txt = self.status_txt.get()
             txt += 'Received Ping message, waiting to send Pong message...\n'
@@ -97,7 +97,7 @@ class ServerBox:
 
             self.ping_action()
 
-            time.sleep(0.5)
+            time.sleep(0.75)
 
             with self.pong_sent:
                 self.pong_sent.notify()
