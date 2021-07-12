@@ -1,9 +1,10 @@
 import asyncio
 import tkinter as tk
 from threading import Thread, Condition
+
 from gui import ServerBox
+from server_logic import server_sends_a_pong
 from utils import Server, localhost, port
-from server_student import server_sends_a_pong
 
 global ping
 global pong

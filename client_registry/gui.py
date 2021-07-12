@@ -3,11 +3,12 @@ from __future__ import print_function
 import tkinter as tk
 from threading import Thread
 
-from utils3 import register_q, login_q, request_q
+from utils import register_q, login_q, request_q
 
 
 class ClientBox:
-    def __init__(self, root, button_cv, completed_cv, mutex, action_flags, send_queue, receive_queue, server_queue, start_cv):
+    def __init__(self, root, button_cv, completed_cv, mutex, action_flags, send_queue, receive_queue, server_queue,
+                 start_cv):
         self.register_action = lambda: print('Registering!')
         self.login_action = lambda: print('Logging In!')
         self.request_action = lambda: print('Requesting Registry!')
@@ -34,30 +35,30 @@ class ClientBox:
         self.status_lbl = tk.Label(master=self.start_frame,
                                    width=50, height=15,
                                    textvariable=self.status_txt,
-                                   font=("Helvetica", 10),
+                                   font=("Helvetica", 14),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 
         # Create local button
         self.local_btn = tk.Button(master=self.start_frame,
-                                  width=8, height=2,
-                                  bg="green", fg="white",
-                                  text="Local", font=("Helvetica", 10, "bold"),
-                                  command=lambda: self._on_local())
+                                   width=8, height=2,
+                                   bg="green", fg="white",
+                                   text="Local", font=("Helvetica", 14, "bold"),
+                                   command=lambda: self._on_local())
         self.local_btn.pack(fill=tk.BOTH)
 
         # Create remote button
         self.remote_btn = tk.Button(master=self.start_frame,
-                                  width=8, height=2,
-                                  bg="green", fg="white",
-                                  text="Remote", font=("Helvetica", 10, "bold"),
-                                  command=lambda: self._on_remote())
+                                    width=8, height=2,
+                                    bg="green", fg="white",
+                                    text="Remote", font=("Helvetica", 14, "bold"),
+                                    command=lambda: self._on_remote())
         self.remote_btn.pack(fill=tk.BOTH)
 
         # Create and start worker
         self.init_worker = Thread(target=lambda: self._process_start(), daemon=True)
         self.init_worker.start()
-    
+
     def _on_local(self):
         self.server_queue.put("Local")
 
@@ -67,7 +68,7 @@ class ClientBox:
     def _process_start(self):
         with self.start_cv:
             self.start_cv.wait()
-        
+
         self._create_ping_frame()
         self.start_frame.destroy()
 
@@ -80,7 +81,7 @@ class ClientBox:
         self.register_btn = tk.Button(master=self.reg_frame,
                                       width=8, height=2,
                                       bg="green", fg="white",
-                                      text="Register", font=("Helvetica", 10, "bold"),
+                                      text="Register", font=("Helvetica", 14, "bold"),
                                       command=lambda: self._on_register())
         self.register_btn.pack(fill=tk.BOTH)
 
@@ -92,20 +93,20 @@ class ClientBox:
         self.status_lbl = tk.Label(master=self.reg_frame,
                                    width=30, height=15,
                                    textvariable=self.status_txt,
-                                   font=("Helvetica", 10),
+                                   font=("Helvetica", 14),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 
         # Create username label
         self.username_label = tk.Label(master=self.reg_frame, text="Username: ",
-                                        height=1,font=("Helvetica", 10),
-                                        bg="gray87", fg="black",
-                                        borderwidth=2, relief="ridge")
-        self.username_label.pack( side = tk.LEFT)
+                                       height=1, font=("Helvetica", 14),
+                                       bg="gray87", fg="black",
+                                       borderwidth=2, relief="ridge")
+        self.username_label.pack(side=tk.LEFT)
         # Create message input box
         self.msg_in_entry = tk.Text(master=self.reg_frame,
                                     width=30, height=1,
-                                    font=("Helvetica", 10),
+                                    font=("Helvetica", 14),
                                     bg="gray87", fg="black")
         self.msg_in_entry.focus_set()
         self.msg_in_entry.pack(fill=tk.BOTH, side=tk.RIGHT)
@@ -129,7 +130,7 @@ class ClientBox:
         self.login_btn = tk.Button(master=self.login_frame,
                                    width=8, height=2,
                                    bg="green", fg="white",
-                                   text="Login", font=("Helvetica", 10, "bold"),
+                                   text="Login", font=("Helvetica", 14, "bold"),
                                    command=lambda: self._on_login())
         self.login_btn.pack(fill=tk.BOTH)
 
@@ -140,21 +141,21 @@ class ClientBox:
         self.status_lbl = tk.Label(master=self.login_frame,
                                    width=30, height=15,
                                    textvariable=self.status_txt,
-                                   font=("Helvetica", 10),
+                                   font=("Helvetica", 14),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
-        
+
         # Create username label
         self.username_label = tk.Label(master=self.login_frame, text="Username: ",
-                                        height=1,font=("Helvetica", 10),
-                                        bg="gray87", fg="black",
-                                        borderwidth=2, relief="ridge")
-        self.username_label.pack( side = tk.LEFT)
+                                       height=1, font=("Helvetica", 14),
+                                       bg="gray87", fg="black",
+                                       borderwidth=2, relief="ridge")
+        self.username_label.pack(side=tk.LEFT)
 
         # Create message input box
         self.msg_in_entry = tk.Text(master=self.login_frame,
                                     width=30, height=1,
-                                    font=("Helvetica", 10),
+                                    font=("Helvetica", 14),
                                     bg="gray87", fg="black")
         self.msg_in_entry.focus_set()
         self.msg_in_entry.pack(fill=tk.BOTH, side=tk.RIGHT)
@@ -197,7 +198,7 @@ class ClientBox:
         self.request_btn = tk.Button(master=self.msg_frame,
                                      width=8, height=2,
                                      bg="green", fg="white",
-                                     text="Request User Registry", font=("Helvetica", 10, "bold"),
+                                     text="Request User Registry", font=("Helvetica", 14, "bold"),
                                      command=lambda: self._on_request())
         self.request_btn.pack(fill=tk.BOTH)
 
@@ -208,7 +209,7 @@ class ClientBox:
         self.status_lbl = tk.Label(master=self.msg_frame,
                                    width=30, height=3,
                                    textvariable=self.status_txt,
-                                   font=("Helvetica", 10),
+                                   font=("Helvetica", 14),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 
@@ -274,7 +275,7 @@ class ClientBox:
         print(clients)
         self.usr_lstbox.delete(0, tk.END)
         for item in clients:
-            if item=='':
+            if item == '':
                 continue
             elif item == self.username:
                 self.usr_lstbox.insert(0, item)
@@ -305,7 +306,7 @@ class ServerBox:
         self.status_lbl = tk.Label(master=self.status_frame,
                                    width=50, height=25,
                                    textvariable=self.status_txt,
-                                   font=("Helvetica", 10),
+                                   font=("Helvetica", 14),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 

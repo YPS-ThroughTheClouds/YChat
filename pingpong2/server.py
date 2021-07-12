@@ -2,8 +2,8 @@ import asyncio
 import tkinter as tk
 from threading import Thread, Condition
 from gui import ServerBox
-from utils2 import Server, localhost, port, sockets
-from server_student import server_forwards_message
+from utils import Server, localhost, port, sockets
+from server_logic import server_forwards_message
 import time
 
 global ping

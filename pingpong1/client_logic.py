@@ -12,9 +12,8 @@
 # """
 async def client_sends_a_ping(client):
     # `*** start ***`  
-    
+
     # Hint: You can send a message using the `await client.send_message(msg)` function.
     
     # `*** end ***`  
-
 

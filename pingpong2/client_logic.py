@@ -18,7 +18,6 @@ async def client_sends_a_ping(client):
     # `*** end ***`
 
 
-
 # """
 # Description:
 # In this function, write the steps client 2 should take when it wants to send a "Pong" message to the server

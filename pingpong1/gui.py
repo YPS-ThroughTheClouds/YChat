@@ -1,8 +1,8 @@
 from __future__ import print_function
 
-import tkinter as tk
-from threading import Thread, Condition
 import time
+import tkinter as tk
+from threading import Thread
 
 
 class ClientBox:
@@ -26,30 +26,30 @@ class ClientBox:
         self.status_lbl = tk.Label(master=self.start_frame,
                                    width=50, height=15,
                                    textvariable=self.status_txt,
-                                   font=("Helvetica", 10),
+                                   font=("Helvetica", 14),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 
         # Create local button
         self.local_btn = tk.Button(master=self.start_frame,
-                                  width=8, height=2,
-                                  bg="green", fg="white",
-                                  text="Local", font=("Helvetica", 10, "bold"),
-                                  command=lambda: self._on_local())
+                                   width=8, height=2,
+                                   bg="green", fg="white",
+                                   text="Local", font=("Helvetica", 14, "bold"),
+                                   command=lambda: self._on_local())
         self.local_btn.pack(fill=tk.BOTH)
 
         # Create remote button
         self.remote_btn = tk.Button(master=self.start_frame,
-                                  width=8, height=2,
-                                  bg="green", fg="white",
-                                  text="Remote", font=("Helvetica", 10, "bold"),
-                                  command=lambda: self._on_remote())
+                                    width=8, height=2,
+                                    bg="green", fg="white",
+                                    text="Remote", font=("Helvetica", 14, "bold"),
+                                    command=lambda: self._on_remote())
         self.remote_btn.pack(fill=tk.BOTH)
 
         # Create and start worker
         self.init_worker = Thread(target=lambda: self._process_start(), daemon=True)
         self.init_worker.start()
-    
+
     def _on_local(self):
         self.server_queue.put("Local")
 
@@ -59,7 +59,7 @@ class ClientBox:
     def _process_start(self):
         with self.start_cv:
             self.start_cv.wait()
-        
+
         self._create_ping_frame()
         self.start_frame.destroy()
 
@@ -72,7 +72,7 @@ class ClientBox:
         self.ping_btn = tk.Button(master=self.ping_frame,
                                   width=8, height=2,
                                   bg="green", fg="white",
-                                  text="Ping", font=("Helvetica", 10, "bold"),
+                                  text="Ping", font=("Helvetica", 14, "bold"),
                                   command=lambda: self._on_ping())
         self.ping_btn.pack(fill=tk.BOTH)
 
@@ -81,7 +81,7 @@ class ClientBox:
         self.status_lbl = tk.Label(master=self.ping_frame,
                                    width=50, height=15,
                                    textvariable=self.status_txt,
-                                   font=("Helvetica", 10),
+                                   font=("Helvetica", 14),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 
@@ -125,7 +125,7 @@ class ServerBox:
         self.status_lbl = tk.Label(master=self.pong_frame,
                                    width=50, height=15,
                                    textvariable=self.status_txt,
-                                   font=("Helvetica", 10),
+                                   font=("Helvetica", 14),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 

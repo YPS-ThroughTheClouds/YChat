@@ -2,7 +2,7 @@ from collections import namedtuple
 from queue import Queue
 
 localhost = '127.0.0.1'
-remotehost = "128.96.32.1" #TO DO: Change this!! 
+remotehost = "128.96.32.1"  # TO DO: Change this!!
 host = localhost
 port = 8888
 sockets = []
@@ -25,19 +25,19 @@ class Client:
     async def receive_message(self):
         data = await self.reader.read(8192)
         message = data.decode()
-        receivedMessages = message.split(' EOM')
+        receivedMessages = message.split(' ')
         print(receivedMessages)
 
         for message in receivedMessages:
             messages = message.split(',')
             if messages[0] == "RegistrationSuccessful":
-                self.queue.put((messages[0], ""))
+                self.queue.put("Registration was successful!")
             elif messages[0] == "RegistrationFailed":
-                self.queue.put((messages[0], ""))
+                self.queue.put("Registration failed!")
             elif messages[0] == "LoginSuccessful":
-                self.queue.put((messages[0], ""))
+                self.queue.put("Login was successful!")
             elif messages[0] == "LoginFailed":
-                self.queue.put((messages[0], ""))
+                self.queue.put("Login failed!")
             elif messages[0] == "UserList":
                 print("User list")
                 i = 1
@@ -47,28 +47,28 @@ class Client:
                     msg += ","
                     i += 1
 
-                self.queue.put((messages[0], msg))
-            elif messages[0] == "Msg":
-                self.queue.put((messages[0], messages[1] + "," + messages[2]))
+                self.queue.put(msg)
             else:
                 print("unknown messages")
 
     async def send_message(self, data):
-        self.writer.write((data + " EOM").encode())
+        self.writer.write(data.encode())
         await self.writer.drain()
 
     async def register(self, username):
         out_buffer = "Register,"
         out_buffer += username
+        out_buffer += " "
         await self.send_message(out_buffer)
 
     async def login(self, username):
         out_buffer = "Login,"
         out_buffer += username
+        out_buffer += " "
         await self.send_message(out_buffer)
 
     async def request_registry(self):
-        out_buffer = "RequestUsers"
+        out_buffer = "RequestUsers "
         await self.send_message(out_buffer)
 
 
@@ -83,7 +83,7 @@ class Server:
     async def receive_message(self):
         data = await self.reader.read(8192)
         message = data.decode()
-        receivedMessages = message.split(' EOM')
+        receivedMessages = message.split(' ')
         print(receivedMessages)
 
         separated_messages = []
@@ -98,35 +98,33 @@ class Server:
                 separated_messages.append(MessageData("RequestUsers", []))
             elif messages[0] == "CloseConnection":
                 separated_messages.append(MessageData("CloseConnection", []))
-            elif messages[0] == "Msg":
-                separated_messages.append(MessageData("Msg", messages[1: len(messages)]))
             else:
                 separated_messages.append(MessageData("Unknown", []))
 
         return separated_messages
 
     async def send_message(self, data):
-        self.writer.write((data + " EOM").encode())
+        self.writer.write(data.encode())
         await self.writer.drain()
 
     async def registration_successful(self, username):
-        await self.send_message("RegistrationSuccessful")
+        await self.send_message("RegistrationSuccessful ")
         register_q.put("Registered client " + username)
 
     async def registration_failed(self, username):
-        await self.send_message("RegistrationFailed")
+        await self.send_message("RegistrationFailed ")
         register_q.put("Failed to register client " + username)
 
     async def login_successful(self, username):
-        await self.send_message("LoginSuccessful")
+        await self.send_message("LoginSuccessful ")
         login_q.put("client " + username + " logged in successfully")
 
     async def login_failed(self, username):
-        await self.send_message("LoginFailed")
+        await self.send_message("LoginFailed ")
         login_q.put("Failed to login client " + username)
 
     async def request_denied(self):
-        await self.send_message("RequestDenied")
+        await self.send_message("RequestDenied ")
         request_q.put("Denied request of client")
 
     async def send_registry(self):
@@ -139,12 +137,6 @@ class Server:
 
         await self.send_message(msg)
         request_q.put("Sent registry to client " + active_users[requesting_client])
-
-    async def forward_message(self, user, msg):
-        msg = "Msg," + active_users[self.get_addr_key()] + "," + msg
-        print("forwarding message: ", msg)
-        recipient = get_client(user)
-        await recipient.send_message(msg)
 
     def registered(self):
         return self.get_addr_key() in users
@@ -159,10 +151,7 @@ class Server:
             return False
 
     def logged_in(self):
-        if self.get_addr_key() in active_users:
-            return True
-        else:
-            return False
+        return self.get_addr_key() in active_users
 
     def log_in_client(self, username):
         active_users[self.get_addr_key()] = username
@@ -173,21 +162,3 @@ class Server:
                 return True
 
         return False
-
-    def get_username(self):
-        return active_users[self.get_addr_key()]
-
-    def user_is_logged_in(self, username):
-        for key in active_users:
-            if active_users[key] == username:
-                return True
-        return False
-
-
-def get_client(username):
-    for key in active_users:
-        if active_users[key] == username:
-            peername = key
-    get_indexes = lambda x, xs: [i for (y, i) in zip(xs, range(len(xs))) if x == y.get_addr_key()]
-    indexes = get_indexes(peername, sockets)
-    return sockets[indexes[0]]
