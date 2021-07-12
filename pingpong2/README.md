@@ -40,5 +40,5 @@ Three windows will open up labelled server, client 1 and client 2. The client 1 
 
 ## Tasks
 You can complete this assignment in two steps:
-1. Implement the client-side logic of client1 sending a **Ping** messages and client 2 sending a **Pong** message. This is done in the file `client_student.py`.
-2. Implement the server-side logic of forwarding the messages between the two clients. This is done in the file `server_student.py`.
+1. Implement the client-side logic of client1 sending a **Ping** messages and client 2 sending a **Pong** message. This is done in the file `client_logic.py`.
+2. Implement the server-side logic of forwarding the messages between the two clients. This is done in the file `server_logic.py`.

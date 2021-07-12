@@ -33,5 +33,5 @@ Two windows will open up, labelled client and server. The client window will hav
 
 ## Tasks
 You can complete this assignment in two steps:
-1. Implement the client-side logic of sending a **Ping** message to the server. This is done in the file `client_student.py`. Run your client application against the server file we've provided to check your client is working correctly.
-2. Implement the server-side logic of sending a **Pong** message whenever a **Ping** is received. This is done in the file `server_student.py`. To test, run your own client implementation against your server implementation.
+1. Implement the client-side logic of sending a **Ping** message to the server. This is done in the file `client_logic.py`. Run your client application against the server file we've provided to check your client is working correctly.
+2. Implement the server-side logic of sending a **Pong** message whenever a **Ping** is received. This is done in the file `server_logic.py`. To test, run your own client implementation against your server implementation.

@@ -35,7 +35,7 @@ class ClientBox:
         self.status_lbl = tk.Label(master=self.start_frame,
                                    width=50, height=15,
                                    textvariable=self.status_txt,
-                                   font=("Helvetica", 10),
+                                   font=("Helvetica", 14),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 
@@ -43,7 +43,7 @@ class ClientBox:
         self.local_btn = tk.Button(master=self.start_frame,
                                    width=8, height=2,
                                    bg="green", fg="white",
-                                   text="Local", font=("Helvetica", 10, "bold"),
+                                   text="Local", font=("Helvetica", 14, "bold"),
                                    command=lambda: self._on_local())
         self.local_btn.pack(fill=tk.BOTH)
 
@@ -51,7 +51,7 @@ class ClientBox:
         self.remote_btn = tk.Button(master=self.start_frame,
                                     width=8, height=2,
                                     bg="green", fg="white",
-                                    text="Remote", font=("Helvetica", 10, "bold"),
+                                    text="Remote", font=("Helvetica", 14, "bold"),
                                     command=lambda: self._on_remote())
         self.remote_btn.pack(fill=tk.BOTH)
 
@@ -81,7 +81,7 @@ class ClientBox:
         self.register_btn = tk.Button(master=self.reg_frame,
                                       width=8, height=2,
                                       bg="green", fg="white",
-                                      text="Register", font=("Helvetica", 10, "bold"),
+                                      text="Register", font=("Helvetica", 14, "bold"),
                                       command=lambda: self._on_register())
         self.register_btn.pack(fill=tk.BOTH)
 
@@ -93,20 +93,20 @@ class ClientBox:
         self.status_lbl = tk.Label(master=self.reg_frame,
                                    width=30, height=15,
                                    textvariable=self.status_txt,
-                                   font=("Helvetica", 10),
+                                   font=("Helvetica", 14),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 
         # Create username label
         self.username_label = tk.Label(master=self.reg_frame, text="Username: ",
-                                       height=1, font=("Helvetica", 10),
+                                       height=1, font=("Helvetica", 14),
                                        bg="gray87", fg="black",
                                        borderwidth=2, relief="ridge")
         self.username_label.pack(side=tk.LEFT)
         # Create message input box
         self.msg_in_entry = tk.Text(master=self.reg_frame,
                                     width=30, height=1,
-                                    font=("Helvetica", 10),
+                                    font=("Helvetica", 14),
                                     bg="gray87", fg="black")
         self.msg_in_entry.focus_set()
         self.msg_in_entry.pack(fill=tk.BOTH, side=tk.RIGHT)
@@ -130,7 +130,7 @@ class ClientBox:
         self.login_btn = tk.Button(master=self.login_frame,
                                    width=8, height=2,
                                    bg="green", fg="white",
-                                   text="Login", font=("Helvetica", 10, "bold"),
+                                   text="Login", font=("Helvetica", 14, "bold"),
                                    command=lambda: self._on_login())
         self.login_btn.pack(fill=tk.BOTH)
 
@@ -141,13 +141,13 @@ class ClientBox:
         self.status_lbl = tk.Label(master=self.login_frame,
                                    width=30, height=15,
                                    textvariable=self.status_txt,
-                                   font=("Helvetica", 10),
+                                   font=("Helvetica", 14),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 
         # Create username label
         self.username_label = tk.Label(master=self.login_frame, text="Username: ",
-                                       height=1, font=("Helvetica", 10),
+                                       height=1, font=("Helvetica", 14),
                                        bg="gray87", fg="black",
                                        borderwidth=2, relief="ridge")
         self.username_label.pack(side=tk.LEFT)
@@ -155,7 +155,7 @@ class ClientBox:
         # Create message input box
         self.msg_in_entry = tk.Text(master=self.login_frame,
                                     width=30, height=1,
-                                    font=("Helvetica", 10),
+                                    font=("Helvetica", 14),
                                     bg="gray87", fg="black")
         self.msg_in_entry.focus_set()
         self.msg_in_entry.pack(fill=tk.BOTH, side=tk.RIGHT)
@@ -198,7 +198,7 @@ class ClientBox:
         self.request_btn = tk.Button(master=self.msg_frame,
                                      width=8, height=2,
                                      bg="green", fg="white",
-                                     text="Request User Registry", font=("Helvetica", 10, "bold"),
+                                     text="Request User Registry", font=("Helvetica", 14, "bold"),
                                      command=lambda: self._on_request())
         self.request_btn.pack(fill=tk.BOTH)
 
@@ -209,7 +209,7 @@ class ClientBox:
         self.status_lbl = tk.Label(master=self.msg_frame,
                                    width=30, height=3,
                                    textvariable=self.status_txt,
-                                   font=("Helvetica", 10),
+                                   font=("Helvetica", 14),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 
@@ -306,7 +306,7 @@ class ServerBox:
         self.status_lbl = tk.Label(master=self.status_frame,
                                    width=50, height=25,
                                    textvariable=self.status_txt,
-                                   font=("Helvetica", 10),
+                                   font=("Helvetica", 14),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 

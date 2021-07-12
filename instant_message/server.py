@@ -5,7 +5,7 @@ from queue import Queue
 from threading import Thread, Condition
 
 from gui import ServerBox
-from server_student import forward_message_to_client
+from server_logic import forward_message_to_client
 from utils import Server, localhost, port, sockets, active_users
 
 global register

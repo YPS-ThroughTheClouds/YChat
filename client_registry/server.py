@@ -4,7 +4,7 @@ import tkinter as tk
 from threading import Thread, Condition
 
 from gui import ServerBox
-from server_student import register_client, login_client, send_registry_to_client
+from server_logic import register_client, login_client, send_registry_to_client
 from utils import Server, localhost, port, sockets, active_users
 
 global register

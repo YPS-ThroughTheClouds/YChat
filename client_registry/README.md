@@ -46,5 +46,5 @@ Two windows will open up, labelled client and server. The client window will hav
 
 ## Tasks
 You can complete this assignment in two steps:
-1. Implement the client-side logic of the client, sending messages to register, login and request the registry. This is done in the file `client_student.py`.
-2. Implement the server-side logic of responding to different requests of the client. This is done in the file `server_student.py`.
+1. Implement the client-side logic of the client, sending messages to register, login and request the registry. This is done in the file `client_logic.py`.
+2. Implement the server-side logic of responding to different requests of the client. This is done in the file `server_logic.py`.

@@ -47,4 +47,4 @@ To test this application, you will have to open multiple terminals for clients.
 
 This assignment has one step:
 1. Implement the server-side logic of forwarding messages that clients want to send to each other. This is done in the 
-   file `server_student.py`.
+   file `server_logic.py`.

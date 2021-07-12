@@ -4,7 +4,7 @@ import tkinter as tk
 from queue import Queue
 from threading import Thread, Condition
 
-from client_student import client_sends_a_ping
+from client_logic import client_sends_a_ping
 from gui import ClientBox
 from utils import Client, localhost, remotehost, port
 

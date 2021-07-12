@@ -26,7 +26,7 @@ class ClientBox:
         self.status_lbl = tk.Label(master=self.start_frame,
                                    width=50, height=15,
                                    textvariable=self.status_txt,
-                                   font=("Helvetica", 10),
+                                   font=("Helvetica", 14),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 
@@ -34,7 +34,7 @@ class ClientBox:
         self.local_btn = tk.Button(master=self.start_frame,
                                    width=8, height=2,
                                    bg="green", fg="white",
-                                   text="Local", font=("Helvetica", 10, "bold"),
+                                   text="Local", font=("Helvetica", 14, "bold"),
                                    command=lambda: self._on_local())
         self.local_btn.pack(fill=tk.BOTH)
 
@@ -42,7 +42,7 @@ class ClientBox:
         self.remote_btn = tk.Button(master=self.start_frame,
                                     width=8, height=2,
                                     bg="green", fg="white",
-                                    text="Remote", font=("Helvetica", 10, "bold"),
+                                    text="Remote", font=("Helvetica", 14, "bold"),
                                     command=lambda: self._on_remote())
         self.remote_btn.pack(fill=tk.BOTH)
 
@@ -72,7 +72,7 @@ class ClientBox:
         self.ping_btn = tk.Button(master=self.ping_frame,
                                   width=8, height=2,
                                   bg="green", fg="white",
-                                  text="Ping", font=("Helvetica", 10, "bold"),
+                                  text="Ping", font=("Helvetica", 14, "bold"),
                                   command=lambda: self._on_ping())
         self.ping_btn.pack(fill=tk.BOTH)
 
@@ -81,7 +81,7 @@ class ClientBox:
         self.status_lbl = tk.Label(master=self.ping_frame,
                                    width=50, height=15,
                                    textvariable=self.status_txt,
-                                   font=("Helvetica", 10),
+                                   font=("Helvetica", 14),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 
@@ -125,7 +125,7 @@ class ServerBox:
         self.status_lbl = tk.Label(master=self.pong_frame,
                                    width=50, height=15,
                                    textvariable=self.status_txt,
-                                   font=("Helvetica", 10),
+                                   font=("Helvetica", 14),
                                    bg="white", fg="black")
         self.status_lbl.pack(fill=tk.BOTH)
 

@@ -3,7 +3,7 @@ import tkinter as tk
 from queue import Queue
 from threading import Thread, Condition, Lock
 
-from client_student import register_user, login, request_user_list
+from client_logic import register_user, login, request_user_list
 from gui import ClientBox
 from utils import Client, localhost, remotehost, port
 

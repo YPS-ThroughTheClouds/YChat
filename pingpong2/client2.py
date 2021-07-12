@@ -5,7 +5,7 @@ from queue import Queue
 import queue
 from gui import Client2Box
 from utils import Client, localhost, remotehost, host, port
-from client_student import client_sends_a_pong
+from client_logic import client_sends_a_pong
 import time
 
 
