@@ -1,11 +1,11 @@
 import asyncio
-import tkinter as tk
 import queue
+import tkinter as tk
 from queue import Queue
 from threading import Thread, Condition, Lock
 
 from gui import ClientBox
-from utils4 import Client, localhost, remotehost, host, port
+from utils import Client, localhost, remotehost, port
 
 
 async def client_receiver(client):
@@ -21,7 +21,6 @@ async def client_sender(client, send_queue):
             msg_type, msg_data = send_queue.get(False)
         except queue.Empty:
             msg_type = None
-
 
         if msg_type:
             if msg_type == "Register":
@@ -40,6 +39,7 @@ async def client_sender(client, send_queue):
 
             elif msg_type == "CloseConnection":
                 await client.send_message("CloseConnection")
+
 
 async def register_user(client, username):
     await client.register(username)
@@ -61,7 +61,7 @@ async def create_client(receive_queue, server_queue, start_cv, loop):
         host = remotehost
     else:
         print("Error: This should never occur")
-    
+
     with start_cv:
         start_cv.notify()
 
@@ -95,12 +95,13 @@ if __name__ == "__main__":
     flags = [False, False, False, False, False]
     send_queue = Queue()
     receive_queue = Queue()
-    server_queue = Queue() 
+    server_queue = Queue()
     start_cv = Condition()
 
     # Create and start message worker
     loop = asyncio.get_event_loop()
-    asyncio_worker = Thread(target=start_asyncio, args=(loop, send_queue, receive_queue, server_queue, start_cv), daemon=True)
+    asyncio_worker = Thread(target=start_asyncio, args=(loop, send_queue, receive_queue, server_queue, start_cv),
+                            daemon=True)
     asyncio_worker.start()
 
     start_gui(send_queue, receive_queue, server_queue, start_cv)

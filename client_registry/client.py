@@ -2,9 +2,10 @@ import asyncio
 import tkinter as tk
 from queue import Queue
 from threading import Thread, Condition, Lock
+
 from client_student import register_user, login, request_user_list
 from gui import ClientBox
-from utils3 import Client, localhost, remotehost, host, port
+from utils import Client, localhost, remotehost, port
 
 
 async def client(button_cv, completed_cv, mutex, flags, send_queue, receive_queue, server_queue, start_cv, loop):
@@ -15,7 +16,7 @@ async def client(button_cv, completed_cv, mutex, flags, send_queue, receive_queu
         host = remotehost
     else:
         print("Error: This should never occur")
-    
+
     with start_cv:
         start_cv.notify()
 
@@ -62,7 +63,8 @@ def start_gui(button_cv, completed_cv, mutex, flags, send_queue, receive_queue, 
 
 
 def start_asyncio(server_queue, start_cv, loop):
-    loop.run_until_complete(client(button_cv, completed_cv, mutex, flags, send_queue, receive_queue, server_queue, start_cv, loop))
+    loop.run_until_complete(
+        client(button_cv, completed_cv, mutex, flags, send_queue, receive_queue, server_queue, start_cv, loop))
     loop.close()
 
 
@@ -73,13 +75,12 @@ if __name__ == "__main__":
     flags = [False, False, False]
     send_queue = Queue()
     receive_queue = Queue()
-    server_queue = Queue() 
+    server_queue = Queue()
     start_cv = Condition()
 
     loop = asyncio.get_event_loop()
-    asyncio_worker = Thread(target=start_asyncio, args=(server_queue, start_cv,loop), daemon=True)
+    asyncio_worker = Thread(target=start_asyncio, args=(server_queue, start_cv, loop), daemon=True)
     asyncio_worker.start()
 
     # Create and start gui
-    start_gui(button_cv, completed_cv, mutex, flags, send_queue, receive_queue,server_queue, start_cv)
-
+    start_gui(button_cv, completed_cv, mutex, flags, send_queue, receive_queue, server_queue, start_cv)

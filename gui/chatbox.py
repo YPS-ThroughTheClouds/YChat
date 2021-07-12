@@ -5,8 +5,6 @@ from queue import Queue
 from threading import Thread
 from time import sleep
 
-from util import noop
-
 
 class ChatBox:
     def __init__(self, root, username, send_queue, recv_queue):

@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import tkinter as tk
 
-from util import noop
+from utils import noop
 
 
 class Login:

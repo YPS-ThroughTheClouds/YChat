@@ -1,11 +1,12 @@
 import asyncio
-import tkinter as tk
-from threading import Thread, Condition
-from gui import ClientBox
-from utils import Client, localhost, remotehost, host, port
-from client_student import client_sends_a_ping
 import time
+import tkinter as tk
 from queue import Queue
+from threading import Thread, Condition
+
+from client_student import client_sends_a_ping
+from gui import ClientBox
+from utils import Client, localhost, remotehost, port
 
 
 async def pingpong_client(ping, pong, server_queue, start_cv, loop):
@@ -16,7 +17,7 @@ async def pingpong_client(ping, pong, server_queue, start_cv, loop):
         host = remotehost
     else:
         print("Error: This should never occur")
-    
+
     with start_cv:
         start_cv.notify()
 
@@ -43,14 +44,14 @@ def start_gui(ping, pong, server_queue, start_cv):
 
 
 def start_asyncio(ping, pong, server_queue, start_cv, loop):
-    loop.run_until_complete(pingpong_client(ping, pong,  server_queue, start_cv, loop))
+    loop.run_until_complete(pingpong_client(ping, pong, server_queue, start_cv, loop))
     loop.close()
 
 
 if __name__ == "__main__":
     ping = Condition()
     pong = Condition()
-    server_queue = Queue() 
+    server_queue = Queue()
     start_cv = Condition()
 
     loop = asyncio.get_event_loop()

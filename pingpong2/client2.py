@@ -4,9 +4,10 @@ from threading import Thread, Condition
 from queue import Queue
 import queue
 from gui import Client2Box
-from utils2 import Client, localhost, remotehost, host, port
+from utils import Client, localhost, remotehost, host, port
 from client_student import client_sends_a_pong
 import time
+
 
 async def client_receiver(client, ping):
     while True:
@@ -24,10 +25,10 @@ async def client_sender(client, pong_queue):
             msg = pong_queue.get(False)
         except queue.Empty:
             msg = None
-        
+
         if msg:
             await client_sends_a_pong(client)
-        
+
 
 async def create_client(loop, start_cv, server_queue):
     msg = server_queue.get()
@@ -37,7 +38,7 @@ async def create_client(loop, start_cv, server_queue):
         host = remotehost
     else:
         print("Error: This should never occur")
-    
+
     with start_cv:
         start_cv.notify()
 
@@ -45,10 +46,12 @@ async def create_client(loop, start_cv, server_queue):
     client = Client(reader, writer)
     return client
 
+
 def start_gui(ping_cv, pong_queue, start_cv, server_queue):
     rt = tk.Tk()
     rt.withdraw()
-    ping_wnd = Client2Box(rt, lambda: print('Ping!'), lambda: print('Pong!'), ping_cv, pong_queue, start_cv, server_queue)
+    ping_wnd = Client2Box(rt, lambda: print('Ping!'), lambda: print('Pong!'), ping_cv, pong_queue, start_cv,
+                          server_queue)
     rt.mainloop()
 
 
@@ -57,12 +60,11 @@ def start_asyncio(loop, ping_cv, pong_queue, start_cv, server_queue):
 
     loop.run_until_complete(asyncio.gather(
         client_sender(client, pong_queue),
-        client_receiver(client, ping_cv), 
+        client_receiver(client, ping_cv),
         loop=loop
     ))
 
     loop.close()
-
 
 
 if __name__ == "__main__":
@@ -72,7 +74,7 @@ if __name__ == "__main__":
     server_queue = Queue()
 
     loop = asyncio.get_event_loop()
-    gui_worker = Thread(target=start_asyncio, args=(loop,ping_cv, pong_queue,start_cv, server_queue), daemon=True)
+    gui_worker = Thread(target=start_asyncio, args=(loop, ping_cv, pong_queue, start_cv, server_queue), daemon=True)
     gui_worker.start()
 
     # Create and start message worker

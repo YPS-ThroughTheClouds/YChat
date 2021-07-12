@@ -26,5 +26,5 @@ async def forward_message_to_client(server, receiver_username, msg):
     if server.logged_in() and server.user_is_logged_in(receiver_username):
         print("forwarding message to ", receiver_username, ", ", msg)
         await server.forward_message(receiver_username, msg)
-    
-    # `*** end ***`  
+
+    # `*** end ***`
