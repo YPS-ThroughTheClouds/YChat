@@ -15,7 +15,6 @@
 async def server_forwards_message(server, msg):
     # `*** start ***`  
 
-    # Hint: You can send forward a message using the `await server.forward_message(msg)` function.
     if (msg == "Ping") | (msg == "Pong"):
         await server.forward_message(msg)
 

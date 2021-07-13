@@ -15,7 +15,6 @@
 async def server_sends_a_pong(server, msg):
     # `*** start ***`  
 
-    # Hint: You can send a message using the `await server.send_message(msg)` function.
     if msg == "Ping":
         await server.send_message("Pong")
 
