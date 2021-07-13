@@ -25,14 +25,21 @@ For the client, we provide the following functions to send messages:
 `await request_registry(self)`
 
 Under the hood, all of these functions call `await send_message(self, msg)`, but we have provided these helper methods so that you do not have to worry about creating the messages in the proper format.  
-In addition to send and receive functions, we also provide functions that complete different server tasks such as adding clients to a registry and logging them in.  
-`server.registered()` returns true if the client has already been registered  
-`server.username_exists(username)` returns true if the given username is taken  
-`server.register_user(username)` can be used to register a client  
-`server.username_matches_record(username)` returns true if the given username matches the registered one  
-`server.log_in_client(username)` can be used to log in a client  
-`server.logged_in()` returns true if the client has already logged in  
 
+The registry on the server's side which stores the registered and logged in clients is implemented using Python dictionaries. 
+Registered clients are stored in the global `users` variable. Logged in clients are stored in the global `active_users` variable.
+The key value for both the dictionaries is a string containing the the clients IP address and socket number which is unique for each client.
+The server can access the key value for each client by calling the server function:
+`get_addr_key(self)`
+
+The returned value is used to index into both the `users` and `active_users` dictionaries.
+Remember, a client has to be registered with a unique username, and once it is registered it is never removed from the `users` list.
+It is added and removed from the `active_users` list depending on if it is logged in.
+The server will automatically log a user off if you close a client's window.
+
+In addition to responding to client's requests, you must also implement functions that complete different server tasks such as adding clients to the registry and logging them in. You can use the following link (as well as any other on the internet) to find functions that can be used to manipulate 
+dictionaries.
+`https://docs.python.org/3/library/stdtypes.html#typesmapping`
 
 ## Running the Applications (on command line)
 Open 2 terminals.  
