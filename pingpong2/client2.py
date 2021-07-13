@@ -5,7 +5,7 @@ from queue import Queue
 import queue
 from gui import Client2Box
 from utils import Client, localhost, remotehost, host, port
-from client_logic import client_sends_a_pong
+from client_logic import client2_logic
 import time
 
 
@@ -27,7 +27,7 @@ async def client_sender(client, pong_queue):
             msg = None
 
         if msg:
-            await client_sends_a_pong(client)
+            await client2_logic(client)
 
 
 async def create_client(loop, start_cv, server_queue):

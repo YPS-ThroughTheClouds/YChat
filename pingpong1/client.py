@@ -4,7 +4,7 @@ import tkinter as tk
 from queue import Queue
 from threading import Thread, Condition
 
-from client_logic import client_sends_a_ping
+from client_logic import client_logic
 from gui import ClientBox
 from utils import Client, localhost, remotehost, port
 
@@ -28,7 +28,7 @@ async def pingpong_client(ping, pong, server_queue, start_cv, loop):
         with ping:
             ping.wait()
 
-        await client_sends_a_ping(client)
+        await client_logic(client)
         data = await client.receive_message()
         if data == "Pong":
             time.sleep(0.75)

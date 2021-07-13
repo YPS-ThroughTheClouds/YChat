@@ -3,7 +3,7 @@ import tkinter as tk
 from threading import Thread, Condition
 
 from gui import ServerBox
-from server_logic import server_sends_a_pong
+from server_logic import server_logic
 from utils import Server, localhost, port
 
 global ping
@@ -22,7 +22,7 @@ async def pingpong_socket_handler(reader, writer):
             with pong:
                 pong.wait()
 
-            await server_sends_a_pong(server, msg)
+            await server_logic(server, msg)
 
 
 def start_gui(ping, pong):

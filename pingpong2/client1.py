@@ -5,7 +5,7 @@ import tkinter as tk
 from queue import Queue
 from threading import Thread, Condition
 
-from client_logic import client_sends_a_ping
+from client_logic import client1_logic
 from gui import Client1Box
 from utils import Client, localhost, remotehost, port
 
@@ -28,7 +28,7 @@ async def client_sender(client, ping_queue):
             msg = None
 
         if msg:
-            await client_sends_a_ping(client)
+            await client1_logic(client)
 
 
 async def create_client(loop, start_cv, server_queue):

@@ -12,7 +12,7 @@
 # msg (string): the message the server has just received from a client
 # 
 # """
-async def server_forwards_message(server, msg):
+async def server_logic(server, msg):
     # `*** start ***`  
 
     if (msg == "Ping") | (msg == "Pong"):
