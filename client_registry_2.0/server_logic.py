@@ -18,8 +18,6 @@ from utils import users, active_users
 def registered(key, username):
     # `*** start ***`
 
-    return key in users
-
     # `*** end ***`  
 
 # """
@@ -32,11 +30,6 @@ def registered(key, username):
 # """
 def username_exists(username): 
     # `*** start ***`
-
-    for key in users:
-        if users[key] == username:
-            return True
-    return False
 
     # `*** end ***`  
 
@@ -55,8 +48,6 @@ def username_exists(username):
 def register_user(key, username):  
     # `*** start ***`
 
-    users[key] = username
-
     # `*** end ***`  
 
 # """
@@ -72,11 +63,6 @@ def register_user(key, username):
 # """
 def username_matches_record(key, username):
     # `*** start ***`
-
-    if registered(key, username):
-        return username == users[key]
-    else:
-        return False
 
     # `*** end ***`  
 
@@ -95,8 +81,6 @@ def username_matches_record(key, username):
 def log_in_client(key, username):
     # `*** start ***`
 
-    active_users[key] = username
-
     # `*** end ***`  
 
 # """
@@ -113,8 +97,6 @@ def log_in_client(key, username):
 def logged_in(key, username):
     # `*** start ***`
 
-    return key in active_users
-
     # `*** end ***`  
 
 # """
@@ -130,8 +112,6 @@ def logged_in(key, username):
 # """ 
 def get_username(key):
     # `*** start ***`
-
-    return users[key]
 
     # `*** end ***`  
 
@@ -157,18 +137,6 @@ async def register_client(server, username):
 
     # `*** start ***`
 
-    key = server.get_addr_key()  
-    if registered(key, username):
-        print("Client is already registered")
-        await server.registration_failed(username)
-    elif username_exists(username):
-        print("Username Exists")
-        await server.registration_failed(username)
-    else:
-        print("Adding user ", username)
-        register_user(key, username)
-        await server.registration_successful(username)
-
     # `*** end ***`  
 
 
@@ -193,15 +161,6 @@ async def login_client(server, username):
 
     # `*** start ***`  
 
-    key = server.get_addr_key()  
-    if registered(key, username) & username_matches_record(key, username):
-        print("Logging in client")
-        log_in_client(key, username)
-        await server.login_successful(username)
-    else:
-        print("Login failed")
-        await server.login_failed(username)
-
     # `*** end ***`  
 
 
@@ -224,14 +183,5 @@ async def send_registry_to_client(server):
     # can be used to respond to a registry request
 
     # `*** start ***`  
-
-    key = server.get_addr_key() 
-    username = get_username(key) 
-    if logged_in(key, username):
-        print("Sending registry to client")
-        await server.send_registry()
-    else:
-        print("Request denied")
-        await server.request_denied()
 
     # `*** end ***`

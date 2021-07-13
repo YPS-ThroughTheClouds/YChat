@@ -19,8 +19,6 @@
 async def register_user(client, username):
     # `*** start ***`  
 
-    await client.register(username)
-
     # `*** end ***`  
 
 
@@ -45,8 +43,6 @@ async def register_user(client, username):
 async def login(client, username):
     # `*** start ***`  
 
-    await client.login(username)
-
     # `*** end ***`  
 
 
@@ -68,7 +64,5 @@ async def login(client, username):
 # """
 async def request_user_list(client):
     # `*** start ***`  
-
-    await client.request_registry()
 
     # `*** end ***`
