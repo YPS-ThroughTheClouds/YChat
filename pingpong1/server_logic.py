@@ -12,9 +12,8 @@
 # msg (string): the message the server has just received from a client
 # 
 # """
-async def server_sends_a_pong(server, msg):
+async def server_logic(server, msg):
     # `*** start ***`  
 
-    # Hint: You can send a message using the `await server.send_message(msg)` function.
 
     # `*** end ***`

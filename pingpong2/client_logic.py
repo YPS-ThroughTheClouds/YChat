@@ -10,10 +10,8 @@
 # client (Client): A handle to a client object that provides functions to send and receive messages.
 #  
 # """
-async def client_sends_a_ping(client):
+async def client1_logic(client):
     # `*** start ***`  
-
-    # Hint: You can send a message using the `await client.send_message(msg)` function.
 
     # `*** end ***`
 
@@ -30,9 +28,7 @@ async def client_sends_a_ping(client):
 # client (Client): A handle to a client object that provides functions to send and receive messages.
 #  
 # """
-async def client_sends_a_pong(client):
+async def client2_logic(client):
     # `*** start ***`  
-
-    # Hint: You can send a message using the `await client.send_message(msg)` function.
 
     # `*** end ***`
