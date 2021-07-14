@@ -2,7 +2,7 @@ from collections import namedtuple
 from queue import Queue
 
 localhost = '127.0.0.1'
-remotehost = "172.31.22.222"  
+remotehost = "54.218.218.214"  
 host = localhost
 port = 8888
 sockets = []
